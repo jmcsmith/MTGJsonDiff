@@ -7,5 +7,7 @@
 
 import Foundation
 
-print("Hello, World!")
-
+print("HI")
+let downloader = JsonDownloader()
+downloader.download()
+readLine()

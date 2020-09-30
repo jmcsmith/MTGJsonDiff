@@ -3,11 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		EE1B271B2523CF820088A6FC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B271A2523CF820088A6FC /* main.swift */; };
+		EE1B27232523D0750088A6FC /* JsonDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B27222523D0750088A6FC /* JsonDownloader.swift */; };
+		EE1B27272523D12A0088A6FC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = EE1B27262523D12A0088A6FC /* Zip */; };
+		EE7D91182523F83C00F393D7 /* MTGSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7D91172523F83C00F393D7 /* MTGSet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +28,9 @@
 /* Begin PBXFileReference section */
 		EE1B27172523CF820088A6FC /* MTGJsonDeff */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MTGJsonDeff; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE1B271A2523CF820088A6FC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		EE1B27222523D0750088A6FC /* JsonDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonDownloader.swift; sourceTree = "<group>"; };
+		EE1B27292523D42C0088A6FC /* MTGJsonDeff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MTGJsonDeff.entitlements; sourceTree = "<group>"; };
+		EE7D91172523F83C00F393D7 /* MTGSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTGSet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE1B27272523D12A0088A6FC /* Zip in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,7 +64,10 @@
 		EE1B27192523CF820088A6FC /* MTGJsonDeff */ = {
 			isa = PBXGroup;
 			children = (
+				EE1B27292523D42C0088A6FC /* MTGJsonDeff.entitlements */,
 				EE1B271A2523CF820088A6FC /* main.swift */,
+				EE1B27222523D0750088A6FC /* JsonDownloader.swift */,
+				EE7D91172523F83C00F393D7 /* MTGSet.swift */,
 			);
 			path = MTGJsonDeff;
 			sourceTree = "<group>";
@@ -78,6 +88,9 @@
 			dependencies = (
 			);
 			name = MTGJsonDeff;
+			packageProductDependencies = (
+				EE1B27262523D12A0088A6FC /* Zip */,
+			);
 			productName = MTGJsonDeff;
 			productReference = EE1B27172523CF820088A6FC /* MTGJsonDeff */;
 			productType = "com.apple.product-type.tool";
@@ -105,6 +118,9 @@
 				Base,
 			);
 			mainGroup = EE1B270E2523CF820088A6FC;
+			packageReferences = (
+				EE1B27252523D12A0088A6FC /* XCRemoteSwiftPackageReference "Zip" */,
+			);
 			productRefGroup = EE1B27182523CF820088A6FC /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -119,7 +135,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE1B27232523D0750088A6FC /* JsonDownloader.swift in Sources */,
 				EE1B271B2523CF820088A6FC /* main.swift in Sources */,
+				EE7D91182523F83C00F393D7 /* MTGSet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,6 +262,7 @@
 		EE1B271F2523CF820088A6FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MTGJsonDeff/MTGJsonDeff.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JANZDS5D43;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -255,6 +274,7 @@
 		EE1B27202523CF820088A6FC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MTGJsonDeff/MTGJsonDeff.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JANZDS5D43;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -285,6 +305,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EE1B27252523D12A0088A6FC /* XCRemoteSwiftPackageReference "Zip" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/Zip.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EE1B27262523D12A0088A6FC /* Zip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE1B27252523D12A0088A6FC /* XCRemoteSwiftPackageReference "Zip" */;
+			productName = Zip;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EE1B270F2523CF820088A6FC /* Project object */;
 }
