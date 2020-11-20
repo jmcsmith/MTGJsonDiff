@@ -30,7 +30,7 @@
 		EE1B27172523CF820088A6FC /* MTGJsonDiff */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MTGJsonDiff; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE1B271A2523CF820088A6FC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		EE1B27222523D0750088A6FC /* JsonDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonDownloader.swift; sourceTree = "<group>"; };
-		EE1B27292523D42C0088A6FC /* MTGJsonDeff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MTGJsonDeff.entitlements; sourceTree = "<group>"; };
+		EE1B27292523D42C0088A6FC /* MTGJsonDiff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MTGJsonDiff.entitlements; sourceTree = "<group>"; };
 		EE20F9E6252410B800D32719 /* Updates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updates.swift; sourceTree = "<group>"; };
 		EE7D91172523F83C00F393D7 /* MTGSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTGSet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,7 +66,7 @@
 		EE1B27192523CF820088A6FC /* MTGJsonDiff */ = {
 			isa = PBXGroup;
 			children = (
-				EE1B27292523D42C0088A6FC /* MTGJsonDeff.entitlements */,
+				EE1B27292523D42C0088A6FC /* MTGJsonDiff.entitlements */,
 				EE1B271A2523CF820088A6FC /* main.swift */,
 				EE1B27222523D0750088A6FC /* JsonDownloader.swift */,
 				EE7D91172523F83C00F393D7 /* MTGSet.swift */,
@@ -266,7 +266,7 @@
 		EE1B271F2523CF820088A6FC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = MTGJsonDeff/MTGJsonDeff.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MTGJsonDeff/MTGJsonDiff.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JANZDS5D43;
@@ -279,7 +279,7 @@
 		EE1B27202523CF820088A6FC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = MTGJsonDeff/MTGJsonDeff.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MTGJsonDeff/MTGJsonDiff.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JANZDS5D43;
