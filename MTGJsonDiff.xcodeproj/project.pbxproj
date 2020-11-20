@@ -27,7 +27,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		EE1B27172523CF820088A6FC /* MTGJsonDeff */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MTGJsonDeff; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE1B27172523CF820088A6FC /* MTGJsonDiff */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MTGJsonDiff; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE1B271A2523CF820088A6FC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		EE1B27222523D0750088A6FC /* JsonDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonDownloader.swift; sourceTree = "<group>"; };
 		EE1B27292523D42C0088A6FC /* MTGJsonDeff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MTGJsonDeff.entitlements; sourceTree = "<group>"; };
@@ -50,7 +50,7 @@
 		EE1B270E2523CF820088A6FC = {
 			isa = PBXGroup;
 			children = (
-				EE1B27192523CF820088A6FC /* MTGJsonDeff */,
+				EE1B27192523CF820088A6FC /* MTGJsonDiff */,
 				EE1B27182523CF820088A6FC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -58,12 +58,12 @@
 		EE1B27182523CF820088A6FC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EE1B27172523CF820088A6FC /* MTGJsonDeff */,
+				EE1B27172523CF820088A6FC /* MTGJsonDiff */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		EE1B27192523CF820088A6FC /* MTGJsonDeff */ = {
+		EE1B27192523CF820088A6FC /* MTGJsonDiff */ = {
 			isa = PBXGroup;
 			children = (
 				EE1B27292523D42C0088A6FC /* MTGJsonDeff.entitlements */,
@@ -72,15 +72,15 @@
 				EE7D91172523F83C00F393D7 /* MTGSet.swift */,
 				EE20F9E6252410B800D32719 /* Updates.swift */,
 			);
-			path = MTGJsonDeff;
+			path = MTGJsonDiff;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EE1B27162523CF820088A6FC /* MTGJsonDeff */ = {
+		EE1B27162523CF820088A6FC /* MTGJsonDiff */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EE1B271E2523CF820088A6FC /* Build configuration list for PBXNativeTarget "MTGJsonDeff" */;
+			buildConfigurationList = EE1B271E2523CF820088A6FC /* Build configuration list for PBXNativeTarget "MTGJsonDiff" */;
 			buildPhases = (
 				EE1B27132523CF820088A6FC /* Sources */,
 				EE1B27142523CF820088A6FC /* Frameworks */,
@@ -90,12 +90,12 @@
 			);
 			dependencies = (
 			);
-			name = MTGJsonDeff;
+			name = MTGJsonDiff;
 			packageProductDependencies = (
 				EE1B27262523D12A0088A6FC /* Zip */,
 			);
 			productName = MTGJsonDeff;
-			productReference = EE1B27172523CF820088A6FC /* MTGJsonDeff */;
+			productReference = EE1B27172523CF820088A6FC /* MTGJsonDiff */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -112,7 +112,7 @@
 					};
 				};
 			};
-			buildConfigurationList = EE1B27122523CF820088A6FC /* Build configuration list for PBXProject "MTGJsonDeff" */;
+			buildConfigurationList = EE1B27122523CF820088A6FC /* Build configuration list for PBXProject "MTGJsonDiff" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -128,7 +128,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EE1B27162523CF820088A6FC /* MTGJsonDeff */,
+				EE1B27162523CF820088A6FC /* MTGJsonDiff */,
 			);
 		};
 /* End PBXProject section */
@@ -292,7 +292,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		EE1B27122523CF820088A6FC /* Build configuration list for PBXProject "MTGJsonDeff" */ = {
+		EE1B27122523CF820088A6FC /* Build configuration list for PBXProject "MTGJsonDiff" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EE1B271C2523CF820088A6FC /* Debug */,
@@ -301,7 +301,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EE1B271E2523CF820088A6FC /* Build configuration list for PBXNativeTarget "MTGJsonDeff" */ = {
+		EE1B271E2523CF820088A6FC /* Build configuration list for PBXNativeTarget "MTGJsonDiff" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EE1B271F2523CF820088A6FC /* Debug */,
