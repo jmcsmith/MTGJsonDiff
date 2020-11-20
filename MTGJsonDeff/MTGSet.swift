@@ -807,6 +807,156 @@ extension Card {
     func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
         return String(data: try self.jsonData(), encoding: encoding)
     }
+    func compareTo(card: Card) -> Bool {
+        if artist != card.artist ||
+            availability != card.availability ||
+            borderColor != card.borderColor ||
+            colorIdentity != card.colorIdentity ||
+            colors?.count != card.colors?.count ||
+            convertedManaCost != card.convertedManaCost ||
+            edhrecRank != card.edhrecRank ||
+            flavorText != card.flavorText ||
+            foreignData?.count != card.foreignData?.count ||
+            frameVersion != card.frameVersion ||
+            hasFoil != card.hasFoil ||
+            hasNonFoil != card.hasNonFoil ||
+            isReprint != card.isReprint ||
+            layout != card.layout ||
+            manaCost != card.manaCost ||
+            name != card.name ||
+            number != card.number ||
+            originalText != card.originalText ||
+            originalType != card.originalType ||
+            printings?.count != card.printings?.count ||
+            rarity != card.rarity ||
+            rulings?.count != card.rulings?.count ||
+            setCode != card.setCode ||
+            subtypes?.count != card.subtypes?.count ||
+            supertypes?.count != card.supertypes?.count ||
+            text != card.text ||
+            type != card.type ||
+            types?.count != card.types?.count ||
+            uuid != card.uuid ||
+            watermark != card.watermark ||
+            keywords?.count != card.keywords?.count ||
+            power != card.power ||
+            toughness != card.toughness ||
+            variations?.count != card.variations?.count ||
+            faceConvertedManaCost != card.faceConvertedManaCost ||
+            faceName != card.faceName ||
+            otherFaceIDS?.count != card.otherFaceIDS?.count ||
+            side != card.side ||
+            isStarter != card.isStarter ||
+            loyalty != card.loyalty ||
+            isStorySpotlight != card.isStorySpotlight ||
+            frameEffects?.count != card.frameEffects?.count ||
+            hasAlternativeDeckLimit != card.hasAlternativeDeckLimit ||
+            isPromo != card.isPromo ||
+            promoTypes?.count != card.promoTypes?.count ||
+            isAlternative != card.isAlternative ||
+            isFullArt != card.isFullArt ||
+            asciiName != card.asciiName ||
+            leadershipSkills?.brawl != card.leadershipSkills?.brawl ||
+            leadershipSkills?.commander != card.leadershipSkills?.commander ||
+            leadershipSkills?.oathbreaker != card.leadershipSkills?.oathbreaker ||
+            purchaseUrls?.cardmarket != card.purchaseUrls?.cardmarket ||
+            purchaseUrls?.cardKingdom != card.purchaseUrls?.cardKingdom ||
+            purchaseUrls?.cardKingdomFoil != card.purchaseUrls?.cardKingdomFoil ||
+            purchaseUrls?.tcgplayer != card.purchaseUrls?.tcgplayer ||
+            legalities?.brawl != card.legalities?.brawl ||
+            legalities?.commander != card.legalities?.commander ||
+            legalities?.duel != card.legalities?.duel ||
+            legalities?.future != card.legalities?.future ||
+            legalities?.historic != card.legalities?.historic ||
+            legalities?.legacy != card.legalities?.legacy ||
+            legalities?.modern != card.legalities?.modern ||
+            legalities?.pauper != card.legalities?.pauper ||
+            legalities?.penny != card.legalities?.penny ||
+            legalities?.pioneer != card.legalities?.pioneer ||
+            legalities?.standard != card.legalities?.standard ||
+            legalities?.vintage != card.legalities?.vintage ||
+            identifiers?.cardKingdomFoilID != card.identifiers?.cardKingdomFoilID ||
+            identifiers?.cardKingdomID != card.identifiers?.cardKingdomID ||
+            identifiers?.mcmID != card.identifiers?.mcmID ||
+            identifiers?.mcmMetaID != card.identifiers?.mcmMetaID ||
+            identifiers?.mtgArenaID != card.identifiers?.mtgArenaID ||
+            identifiers?.mtgjsonV4ID != card.identifiers?.mtgjsonV4ID ||
+            identifiers?.mtgoFoilID != card.identifiers?.mtgoFoilID ||
+            identifiers?.mtgoID != card.identifiers?.mtgoID ||
+            identifiers?.multiverseID != card.identifiers?.multiverseID ||
+            identifiers?.scryfallID != card.identifiers?.scryfallID ||
+            identifiers?.scryfallIllustrationID != card.identifiers?.scryfallIllustrationID ||
+            identifiers?.scryfallOracleID != card.identifiers?.scryfallOracleID ||
+            identifiers?.tcgplayerProductID != card.identifiers?.tcgplayerProductID
+            {
+            return false
+        } else {
+            //promoTypes: [String]?? = nil,
+            if let pt = promoTypes?.sorted(), let oldpt = card.promoTypes?.sorted() {
+                if !pt.elementsEqual(oldpt) {
+                    return false
+                }
+            }
+            //frameEffects: [String]?? = nil,
+            if let n = frameEffects?.sorted(), let old = card.frameEffects?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //colors: [String]?? = nil,
+            if let n = colors?.sorted(), let old = card.colors?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //otherFaceIDS: [String]?? = nil,
+            if let n = otherFaceIDS?.sorted(), let old = card.otherFaceIDS?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //variations: [String]?? = nil,
+            if let n = variations?.sorted(), let old = card.variations?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //keywords: [String]?? = nil,
+            if let n = keywords?.sorted(), let old = card.keywords?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //types: [String]?? = nil,
+            if let n = types?.sorted(), let old = card.types?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //supertypes: [String]?? = nil,
+            if let n = supertypes?.sorted(), let old = card.supertypes?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //subtypes: [String]?? = nil,
+            if let n = subtypes?.sorted(), let old = card.subtypes?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //printings: [String]?? = nil,
+            if let n = printings?.sorted(), let old = card.printings?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            
+            //rulings: [Ruling]?? = nil,
+            //foreignData: [ForeignDatum]?? = nil,
+            return true
+        }
+    }
 }
 
 // MARK: - ForeignDatum

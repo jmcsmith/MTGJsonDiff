@@ -10,6 +10,7 @@
 		EE1B271B2523CF820088A6FC /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B271A2523CF820088A6FC /* main.swift */; };
 		EE1B27232523D0750088A6FC /* JsonDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1B27222523D0750088A6FC /* JsonDownloader.swift */; };
 		EE1B27272523D12A0088A6FC /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = EE1B27262523D12A0088A6FC /* Zip */; };
+		EE20F9E7252410B800D32719 /* Updates.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE20F9E6252410B800D32719 /* Updates.swift */; };
 		EE7D91182523F83C00F393D7 /* MTGSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7D91172523F83C00F393D7 /* MTGSet.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +31,7 @@
 		EE1B271A2523CF820088A6FC /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		EE1B27222523D0750088A6FC /* JsonDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonDownloader.swift; sourceTree = "<group>"; };
 		EE1B27292523D42C0088A6FC /* MTGJsonDeff.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MTGJsonDeff.entitlements; sourceTree = "<group>"; };
+		EE20F9E6252410B800D32719 /* Updates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updates.swift; sourceTree = "<group>"; };
 		EE7D91172523F83C00F393D7 /* MTGSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTGSet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,6 +70,7 @@
 				EE1B271A2523CF820088A6FC /* main.swift */,
 				EE1B27222523D0750088A6FC /* JsonDownloader.swift */,
 				EE7D91172523F83C00F393D7 /* MTGSet.swift */,
+				EE20F9E6252410B800D32719 /* Updates.swift */,
 			);
 			path = MTGJsonDeff;
 			sourceTree = "<group>";
@@ -102,7 +105,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1200;
-				LastUpgradeCheck = 1200;
+				LastUpgradeCheck = 1220;
 				TargetAttributes = {
 					EE1B27162523CF820088A6FC = {
 						CreatedOnToolsVersion = 12.0;
@@ -137,6 +140,7 @@
 			files = (
 				EE1B27232523D0750088A6FC /* JsonDownloader.swift in Sources */,
 				EE1B271B2523CF820088A6FC /* main.swift in Sources */,
+				EE20F9E7252410B800D32719 /* Updates.swift in Sources */,
 				EE7D91182523F83C00F393D7 /* MTGSet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,6 +267,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = MTGJsonDeff/MTGJsonDeff.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JANZDS5D43;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -275,6 +280,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = MTGJsonDeff/MTGJsonDeff.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JANZDS5D43;
 				ENABLE_HARDENED_RUNTIME = YES;
