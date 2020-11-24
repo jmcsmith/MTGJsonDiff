@@ -814,7 +814,6 @@ extension Card {
             colorIdentity != card.colorIdentity ||
             colors?.count != card.colors?.count ||
             convertedManaCost != card.convertedManaCost ||
-            edhrecRank != card.edhrecRank ||
             flavorText != card.flavorText ||
             foreignData?.count != card.foreignData?.count ||
             frameVersion != card.frameVersion ||
@@ -951,9 +950,16 @@ extension Card {
                     return false
                 }
             }
-            
-            //rulings: [Ruling]?? = nil,
-            //foreignData: [ForeignDatum]?? = nil,
+            if let newRulings = rulings, let oldRulings = card.rulings {
+                for ruling in newRulings {
+                    var old = oldRulings.first(where: { $0.date == ruling.date && $0.text == ruling.text })
+                    if old != nil {
+                        continue
+                    } else {
+                        return false
+                    }
+                }
+            }
             return true
         }
     }

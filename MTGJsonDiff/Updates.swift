@@ -68,7 +68,7 @@ extension Updates {
 // MARK: - Update
 struct Update: Codable {
     var date: Date?
-    var sets: [String]?
+    var sets: [Set]?
 }
 
 // MARK: Update convenience initializers and mutators
@@ -91,7 +91,7 @@ extension Update {
     
     func with(
         date: Date?? = nil,
-        sets: [String]?? = nil
+        sets: [Set]?? = nil
     ) -> Update {
         return Update(
             date: date ?? self.date,
@@ -107,6 +107,61 @@ extension Update {
         return String(data: try self.jsonData(), encoding: encoding)
     }
 }
+
+//
+// To read values from URLs:
+//
+//   let task = URLSession.shared.setTask(with: url) { set, response, error in
+//     if let set = set {
+//       ...
+//     }
+//   }
+//   task.resume()
+
+// MARK: - Set
+struct Set: Codable {
+    var code: String?
+    var cardIDs: [String]?
+}
+
+// MARK: Set convenience initializers and mutators
+
+extension Set {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(Set.self, from: data)
+    }
+    
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+    
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+    
+    func with(
+        code: String?? = nil,
+        cardIDs: [String]?? = nil
+    ) -> Set {
+        return Set(
+            code: code ?? self.code,
+            cardIDs: cardIDs ?? self.cardIDs
+        )
+    }
+    
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+    
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}
+
+// MARK: - Helper functions for creating encoders and decoders
 
 
 

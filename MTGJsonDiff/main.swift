@@ -7,7 +7,10 @@
 
 import Foundation
 
-print("HI")
+
 let downloader = JsonDownloader()
 downloader.download()
-readLine()
+exit(EXIT_SUCCESS)
+
+
+//readLine()

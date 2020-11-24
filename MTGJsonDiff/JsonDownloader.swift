@@ -9,15 +9,20 @@ import Foundation
 import Zip
 
 class JsonDownloader {
-    func download(){
+    func download() {
         var updates = loadUpdatesJson()
         let setFileZipURL = "https://mtgjson.com/api/v5/AllSetFiles.zip"
         let formatter1 = DateFormatter()
         formatter1.dateFormat = "yyyy-MM-dd"
         var update = Update()
         update.date = Date()
+        update.sets = []
+        
         if let url = URL(string: setFileZipURL) {
             do {
+                
+           
+                
                 try url.download(to: .downloadsDirectory, overwrite: true){ url, error in
                     guard let url = url else { return }
                     print(url)
@@ -35,17 +40,25 @@ class JsonDownloader {
                         }
                         print(oldPulls.first)
                         var oldFiles: [URL] = []
-                        if let lastpull = oldPulls.first {
+                        if let lastpull = oldPulls.first(where: {!$0.lastPathComponent.contains(".DS_Store")}) {
                             oldFiles = try FileManager.default.contentsOfDirectory(at: lastpull, includingPropertiesForKeys: nil)
                         }
                         do {
                             let fileURLs = try FileManager.default.contentsOfDirectory(at: destinationUrl, includingPropertiesForKeys: nil)
                             // process files
+                            
+                            
                             for url in fileURLs {
                                 print(url)
+                                if !url.lastPathComponent.contains(".json") {
+                                    continue
+                                }
                                 let data = try Data(contentsOf: url)
                                 let set = try MTGSet(data: data)
-                                print("\(set.data?.code): \(set.data?.cards?.count)")
+                                print("\(set.data?.code ?? ""): \(set.data?.cards?.count ?? 0)")
+                                var currentSetResult: Set = Set()
+                                currentSetResult.cardIDs = []
+                                
                                 //get previous set
                                 var setLastPull = oldFiles.first {
                                     if let code = set.data?.code {
@@ -68,7 +81,8 @@ class JsonDownloader {
                                     if set.data?.cards?.count != oldSet.data?.cards?.count {
                                         if let code = set.data?.code {
                                             print("\(code) card count different - add to update")
-                                            update.sets?.append(code)
+                                            currentSetResult.code = code
+                                            update.sets?.append(currentSetResult)
                                         }
                                         continue
                                     }
@@ -76,25 +90,28 @@ class JsonDownloader {
                                         for newCard in cards {
                                             if let oldCard = oldSet.data?.cards?.first(where: { $0.uuid == newCard.uuid }) {
                                                 if !newCard.compareTo(card: oldCard) {
-                                                    if let code = set.data?.code {
-                                                        print("\(code) has a different card")
-                                                        update.sets?.append(code)
-                                                        break
+                                                    if let code = set.data?.code, let uuid = newCard.uuid {
+                                                        print("\(code) has a different card: \(newCard.name)")
+                                                        currentSetResult.cardIDs?.append(uuid)
                                                     }
                                                 }
                                             } else {
-                                                if let code = set.data?.code {
-                                                    print("\(code) has a new card")
-                                                    update.sets?.append(code)
-                                                    break
+                                                if let code = set.data?.code, let uuid = newCard.uuid {
+                                                    print("\(code) has a new card: \(newCard.name)")
+                                                    currentSetResult.cardIDs?.append(uuid)
                                                 }
                                             }
+                                        }
+                                        if let code = set.data?.code {
+                                            currentSetResult.code = code
+                                            update.sets?.append(currentSetResult)
                                         }
                                     }
                                 } else {
                                     if let code = set.data?.code {
                                         print("\(code) does not exist in prior run")
-                                        update.sets?.append(code)
+                                        currentSetResult.code = code
+                                        update.sets?.append(currentSetResult)
                                     }
                                     continue
                                 }
@@ -107,6 +124,7 @@ class JsonDownloader {
                                 //if card doesnt exist
                                 
                             }
+                            print("Done")
                             let dateFormatter = DateFormatter()
                             let enUSPosixLocale = Locale(identifier: "en_US_POSIX")
                             dateFormatter.locale = enUSPosixLocale
@@ -135,6 +153,7 @@ class JsonDownloader {
                         print(error.localizedDescription)
                     }
                 }
+                
             } catch {
                 print(error)
             }
@@ -165,6 +184,7 @@ class JsonDownloader {
 }
 extension URL {
     func download(to directory: FileManager.SearchPathDirectory, using fileName: String? = nil, overwrite: Bool = false, completion: @escaping (URL?, Error?) -> Void) throws {
+        let sema = DispatchSemaphore( value: 0)
         let directory = try FileManager.default.url(for: directory, in: .userDomainMask, appropriateFor: nil, create: true)
         let destination: URL
         if let fileName = fileName {
@@ -190,9 +210,11 @@ extension URL {
                 }
                 try FileManager.default.moveItem(at: location, to: destination)
                 completion(destination, nil)
+                sema.signal()
             } catch {
                 print(error)
             }
         }.resume()
+        sema.wait()
     }
 }
