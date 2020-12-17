@@ -615,6 +615,7 @@ struct Card: Codable {
     let isAlternative: Bool?
     let isFullArt: Bool?
     let asciiName: String?
+    let isReserved: Bool?
     
     enum CodingKeys: String, CodingKey {
         case artist = "artist"
@@ -669,6 +670,7 @@ struct Card: Codable {
         case isAlternative = "isAlternative"
         case isFullArt = "isFullArt"
         case asciiName = "asciiName"
+        case isReserved = "isReserved"
     }
 }
 
@@ -742,7 +744,8 @@ extension Card {
         promoTypes: [String]?? = nil,
         isAlternative: Bool?? = nil,
         isFullArt: Bool?? = nil,
-        asciiName: String?? = nil
+        asciiName: String?? = nil,
+        isReserved: Bool?? = nil
     ) -> Card {
         return Card(
             artist: artist ?? self.artist,
@@ -796,7 +799,8 @@ extension Card {
             promoTypes: promoTypes ?? self.promoTypes,
             isAlternative: isAlternative ?? self.isAlternative,
             isFullArt: isFullArt ?? self.isFullArt,
-            asciiName: asciiName ?? self.asciiName
+            asciiName: asciiName ?? self.asciiName,
+            isReserved: isReserved ?? self.isReserved
         )
     }
     

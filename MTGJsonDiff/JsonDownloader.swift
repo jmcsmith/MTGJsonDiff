@@ -10,6 +10,8 @@ import Zip
 
 class JsonDownloader {
     func download() {
+        print(FileManager.default.currentDirectoryPath)
+        let url = URL(string: FileManager.default.currentDirectoryPath)
         var updates = loadUpdatesJson()
         let setFileZipURL = "https://mtgjson.com/api/v5/AllSetFiles.zip"
         let formatter1 = DateFormatter()
@@ -21,7 +23,7 @@ class JsonDownloader {
         if let url = URL(string: setFileZipURL) {
             do {
                 
-           
+                
                 
                 try url.download(to: .downloadsDirectory, overwrite: true){ url, error in
                     guard let url = url else { return }
@@ -35,10 +37,9 @@ class JsonDownloader {
                         //                        print(unzipDirectory)
                         
                         var archiveURL = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("JsonFiles")
-                        var oldPulls = try FileManager.default.contentsOfDirectory(at: archiveURL, includingPropertiesForKeys: nil).sorted {
+                        let oldPulls = try FileManager.default.contentsOfDirectory(at: archiveURL, includingPropertiesForKeys: nil).sorted {
                             return $0.lastPathComponent > $1.lastPathComponent
                         }
-                        print(oldPulls.first)
                         var oldFiles: [URL] = []
                         if let lastpull = oldPulls.first(where: {!$0.lastPathComponent.contains(".DS_Store")}) {
                             oldFiles = try FileManager.default.contentsOfDirectory(at: lastpull, includingPropertiesForKeys: nil)
@@ -49,7 +50,6 @@ class JsonDownloader {
                             
                             
                             for url in fileURLs {
-                                print(url)
                                 if !url.lastPathComponent.contains(".json") {
                                     continue
                                 }
@@ -60,8 +60,11 @@ class JsonDownloader {
                                 currentSetResult.cardIDs = []
                                 
                                 //get previous set
-                                var setLastPull = oldFiles.first {
+                                let setLastPull = oldFiles.first {
                                     if let code = set.data?.code {
+                                        if code == "CON" {
+                                            return $0.lastPathComponent == "\(code)_.json"
+                                        }
                                         return $0.lastPathComponent == "\(code).json"
                                     }
                                     return false
@@ -70,7 +73,6 @@ class JsonDownloader {
                                 if let setLastPullURL = setLastPull {
                                     let oldData = try Data(contentsOf: setLastPullURL)
                                     oldSet = try MTGSet(data: oldData)
-                                    print(oldSet.data?.code)
                                     
                                     //compare
                                     //if set date == previous set date then skip, wasnt rebuilt
@@ -102,9 +104,11 @@ class JsonDownloader {
                                                 }
                                             }
                                         }
-                                        if let code = set.data?.code {
-                                            currentSetResult.code = code
-                                            update.sets?.append(currentSetResult)
+                                        if currentSetResult.cardIDs?.count ?? 0 > 0 {
+                                            if let code = set.data?.code {
+                                                currentSetResult.code = code
+                                                update.sets?.append(currentSetResult)
+                                            }
                                         }
                                     }
                                 } else {
@@ -131,9 +135,12 @@ class JsonDownloader {
                             dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
                             dateFormatter.calendar = Calendar(identifier: .gregorian)
                             
+                            if update.sets?.count ?? 0 > 0 {
+                                updates?.updates?.append(update)
+                            }
                             
-                            updates?.updates?.append(update)
                             if let updates = updates {
+                                
                                 self.writeUpdateFile(updates: updates)
                             }
                             //move from current to dates folder
@@ -162,8 +169,8 @@ class JsonDownloader {
     func loadUpdatesJson() -> Updates? {
         var u: Updates?
         do {
-            var url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updates.json")
-            var data = try Data(contentsOf: url)
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updates.json")
+            let data = try Data(contentsOf: url)
             u = try Updates(data: data)
         }
         catch {
@@ -173,8 +180,8 @@ class JsonDownloader {
     }
     func writeUpdateFile(updates: Updates) {
         do {
-            var url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updates.json")
-            var str = try updates.jsonString()
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updates.json")
+            let str = try updates.jsonString()
             try str?.write(to: url, atomically: true, encoding: .utf8)
         }
         catch {
