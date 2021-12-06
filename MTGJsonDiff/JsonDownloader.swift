@@ -53,8 +53,16 @@ class JsonDownloader {
                                 if !url.lastPathComponent.contains(".json") {
                                     continue
                                 }
-                                let data = try Data(contentsOf: url)
-                                let set = try MTGSet(data: data)
+                                var data: Data
+                                var set: MTGSet
+                                do {
+                                     data = try Data(contentsOf: url)
+                                     set = try MTGSet(data: data)
+                                } catch {
+                                    print("error in URL loop")
+                                    print(error)
+                                    continue
+                                }
                                 print("\(set.data?.code ?? ""): \(set.data?.cards?.count ?? 0)")
                                 var currentSetResult: Set = Set()
                                 currentSetResult.cardIDs = []
@@ -77,7 +85,7 @@ class JsonDownloader {
                                     //compare
                                     //if set date == previous set date then skip, wasnt rebuilt
                                     if set.meta?.date == oldSet.meta?.date {
-                                        print("\(set.data?.code) did not update")
+                                        print("\(String(describing: set.data?.code)) did not update")
                                         continue
                                     }
                                     if set.data?.cards?.count != oldSet.data?.cards?.count {
@@ -93,13 +101,13 @@ class JsonDownloader {
                                             if let oldCard = oldSet.data?.cards?.first(where: { $0.uuid == newCard.uuid }) {
                                                 if !newCard.compareTo(card: oldCard) {
                                                     if let code = set.data?.code, let uuid = newCard.uuid {
-                                                        print("\(code) has a different card: \(newCard.name)")
+                                                        print("\(code) has a different card: \(String(describing: newCard.name))")
                                                         currentSetResult.cardIDs?.append(uuid)
                                                     }
                                                 }
                                             } else {
                                                 if let code = set.data?.code, let uuid = newCard.uuid {
-                                                    print("\(code) has a new card: \(newCard.name)")
+                                                    print("\(code) has a new card: \(String(describing: newCard.name))")
                                                     currentSetResult.cardIDs?.append(uuid)
                                                 }
                                             }
@@ -119,13 +127,6 @@ class JsonDownloader {
                                     }
                                     continue
                                 }
-                                
-                                //else
-                                //compare meta values
-                                //compare cards
-                                
-                                //if set doesnt exist
-                                //if card doesnt exist
                                 
                             }
                             print("Done")
@@ -153,6 +154,7 @@ class JsonDownloader {
                         } catch {
                             print("error getting files")
                             print(error)
+                            
                         }
                     }
                     catch {
