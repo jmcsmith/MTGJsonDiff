@@ -805,6 +805,7 @@ extension Card {
     }
     
     func jsonData() throws -> Data {
+        
         return try newJSONEncoder().encode(self)
     }
     
@@ -956,7 +957,7 @@ extension Card {
             }
             if let newRulings = rulings, let oldRulings = card.rulings {
                 for ruling in newRulings {
-                    var old = oldRulings.first(where: { $0.date == ruling.date && $0.text == ruling.text })
+                    let old = oldRulings.first(where: { $0.date == ruling.date && $0.text == ruling.text })
                     if old != nil {
                         continue
                     } else {
