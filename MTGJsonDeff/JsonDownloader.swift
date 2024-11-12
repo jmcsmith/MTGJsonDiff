@@ -12,13 +12,9 @@ class JsonDownloader {
     func download() {
         print("Run Date: \(Date())")
         print(FileManager.default.currentDirectoryPath)
-        var updates = loadUpdatesJson()
         let setFileZipURL = "https://mtgjson.com/api/v5/AllSetFiles.zip"
         let formatter1 = DateFormatter()
         formatter1.dateFormat = "yyyy-MM-dd"
-        var update = Update()
-        update.date = Date()
-        update.sets = []
         
         if let url = URL(string: setFileZipURL) {
             do {
@@ -51,8 +47,8 @@ class JsonDownloader {
                                 var data: Data
                                 var set: MTGSet
                                 do {
-                                     data = try Data(contentsOf: url)
-                                     set = try MTGSet(data: data)
+                                    data = try Data(contentsOf: url)
+                                    set = try MTGSet(data: data)
                                 } catch {
                                     print("error in URL loop")
                                     print(error)
@@ -60,8 +56,6 @@ class JsonDownloader {
                                 }
                                 print("\(set.data?.code ?? ""): \(set.data?.cards?.count ?? 0)")
                                 let setDTO = UpdateSetDTO(code: set.data?.code ?? "")
-                                var currentSetResult: Set = Set()
-                                currentSetResult.cardIDs = []
                                 
                                 //get previous set
                                 let setLastPull = oldFiles.first {
@@ -77,7 +71,7 @@ class JsonDownloader {
                                 if let setLastPullURL = setLastPull {
                                     let oldData = try Data(contentsOf: setLastPullURL)
                                     do {
-                                    oldSet = try MTGSet(data: oldData)
+                                        oldSet = try MTGSet(data: oldData)
                                     } catch {
                                         print("error getting old file")
                                         print(error)
@@ -90,27 +84,11 @@ class JsonDownloader {
                                         print("\(String(describing: set.data?.code)) did not update")
                                         continue
                                     }
-                                    if set.data?.cards?.count != oldSet.data?.cards?.count {
-                                        if let code = set.data?.code {
-                                            print("\(code) card count different - add to update")
-                                            currentSetResult.code = code
-                                            update.sets?.append(currentSetResult)
-                                            
-                                            //add all cards to the setDTO and add the setDTO to the updateDTO
-                                            for card in set.data?.cards ?? [] {
-                                                let c = UpdateCardDTO(uuid: card.uuid ?? "", json: try self.replaceNewlines(with: card.jsonString(encoding:.utf8) ?? ""))
-                                                setDTO.cards.append(c)
-                                            }
-                                        }
-                                        continue
-                                    }
                                     if let cards = set.data?.cards {
                                         for newCard in cards {
                                             if let oldCard = oldSet.data?.cards?.first(where: { $0.uuid == newCard.uuid }) {
                                                 if !newCard.compareTo(card: oldCard) {
-                                                    if let code = set.data?.code, let uuid = newCard.uuid {
-                                                        //print("\(code) has a different card: \(String(describing: newCard.name))")
-                                                        currentSetResult.cardIDs?.append(uuid)
+                                                    if let uuid = newCard.uuid {
                                                         //add the card to the setDTO
                                                         let c = UpdateCardDTO(uuid: uuid, json: try self.replaceNewlines(with: newCard.jsonString(encoding:.utf8) ?? ""))
                                                         setDTO.cards.append(c)
@@ -119,20 +97,13 @@ class JsonDownloader {
                                             } else {
                                                 if let code = set.data?.code, let uuid = newCard.uuid {
                                                     print("\(code) has a new card: \(String(describing: newCard.name))")
-                                                    currentSetResult.cardIDs?.append(uuid)
-                                                    
                                                     //add the card to the setDTO
                                                     let c = UpdateCardDTO(uuid: uuid, json: try self.replaceNewlines(with: newCard.jsonString(encoding:.utf8) ?? ""))
                                                     setDTO.cards.append(c)
                                                 }
                                             }
                                         }
-                                        if currentSetResult.cardIDs?.count ?? 0 > 0 {
-                                            if let code = set.data?.code {
-                                                currentSetResult.code = code
-                                                update.sets?.append(currentSetResult)
-                                            }
-                                        }
+                         
                                         //if setDTO.cards.count > 0 add to the UpdateDTO, else dont
                                         if setDTO.cards.count > 0 {
                                             updateDTO.sets.append(setDTO)
@@ -141,12 +112,14 @@ class JsonDownloader {
                                 } else {
                                     if let code = set.data?.code {
                                         print("\(code) does not exist in prior run")
-                                        currentSetResult.code = code
-                                        update.sets?.append(currentSetResult)
+
                                         //add all cards to the setDTO and add setDTO to UpdateDTO
                                         for card in set.data?.cards ?? [] {
                                             let c = UpdateCardDTO(uuid: card.uuid ?? "", json: try self.replaceNewlines(with: card.jsonString(encoding:.utf8) ?? ""))
                                             setDTO.cards.append(c)
+                                        }
+                                        if setDTO.cards.count > 0 {
+                                            updateDTO.sets.append(setDTO)
                                         }
                                     }
                                     continue
@@ -160,20 +133,12 @@ class JsonDownloader {
                             dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
                             dateFormatter.calendar = Calendar(identifier: .gregorian)
                             
-                            if update.sets?.count ?? 0 > 0 {
-                                updates?.updates?.append(update)
-                            }
-                            
-                            if let updates = updates {
-                                
-                                self.writeUpdateFile(updates: updates)
-                            }
                             //if updateDTO has sets write file
                             if updateDTO.sets.count > 0 {
                                 self.writeDTOtoFile(updates: updateDTO)
-                                    Task {
-                                        await self.postToAPIAsync(update: updateDTO)
-                                    }
+                                Task {
+                                    await self.postToAPIAsync(update: updateDTO)
+                                }
                             } else {
                                 print("No sets to update")
                             }
@@ -201,18 +166,6 @@ class JsonDownloader {
             }
         }
     }
-    func loadUpdatesJson() -> Updates? {
-        var u: Updates?
-        do {
-            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updates.json")
-            let data = try Data(contentsOf: url)
-            u = try Updates(data: data)
-        }
-        catch {
-            print(error)
-        }
-        return u
-    }
     func writeUpdateFile(updates: Updates) {
         do {
             let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updates.json")
@@ -234,56 +187,43 @@ class JsonDownloader {
             print(error )
         }
     }
-    func postToAPI(update: UpdateDTO) {
-        
-       
-        
-        guard (try? JSONEncoder().encode(update)) != nil else {
-            return
+    func writeUpdateDatatoFile(updates: Data) {
+        do {
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updateData.json")
+            
+            let str = String(decoding: updates, as: UTF8.self)
+            try str.write(to: url, atomically: true, encoding: .utf8)
+            print("Update Data File Written to disk.")
         }
-        let url = URL(string: "http://10.0.0.177:8080/updates")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let task = URLSession.shared.uploadTask(with: request, from: try? update.jsonData()) { data, response, error in
-                if let error = error {
-                    print ("error: \(error)")
-                    return
-                }
-                guard let response = response as? HTTPURLResponse,
-                    (200...299).contains(response.statusCode) else {
-                    print ("server error")
-                    return
-                }
-                if let mimeType = response.mimeType,
-                    mimeType == "application/json",
-                    let data = data,
-                    let dataString = String(data: data, encoding: .utf8) {
-                    print ("got data: \(dataString)")
-                }
-            }
-            task.resume()
+        catch {
+            print(error )
+        }
     }
+
     func postToAPIAsync(update: UpdateDTO) async {
-        guard let uploadData = try? JSONEncoder().encode(update) else {
+
+        guard let uploadData = try? newJSONEncoder().encode(update) else {
             return
         }
+        writeUpdateDatatoFile(updates: uploadData)
         let url = URL(string: "http://10.0.0.177:8080/updates")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         do {
-
-            let (_, response) = try await URLSession.shared.upload(for: request, from: uploadData)
+            
+            let (data, response) = try await URLSession.shared.upload(for: request, from: uploadData)
             if let httpResponse = response as? HTTPURLResponse {
                 if httpResponse.statusCode != 200 {
                     print("Post to API failed: \(httpResponse.statusCode)")
                 }
                 print(httpResponse)
+                let outputStr  = String(data: data, encoding: String.Encoding.utf8) as String?
+                
+                print(outputStr ?? "")
             }
-        
+            
             // handle the result
         } catch {
             print("Checkout failed: \(error.localizedDescription)")
@@ -291,16 +231,16 @@ class JsonDownloader {
     }
     func replaceNewlines(with input: String) -> String {
         let newlineCharacterSet = CharacterSet.newlines
-
-           // Replace invisible new line characters with "\\n"
-         var temp = input.components(separatedBy: newlineCharacterSet).joined(separator: "\\n")
-
+        
+        // Replace invisible new line characters with "\\n"
+        var temp = input.components(separatedBy: newlineCharacterSet).joined(separator: "\\n")
+        
         // Replace the newline character (0A) with an empty string or any desired string
         temp = temp.replacingOccurrences(of: "\u{0D}", with: "\\n")
         temp = temp.replacingOccurrences(of: "\u{0009}", with: "")
-           return temp.replacingOccurrences(of: "\u{0A}", with: "\\n") // Replace with an empty string
-
-
+        return temp.replacingOccurrences(of: "\u{0A}", with: "\\n") // Replace with an empty string
+        
+        
     }
 }
 extension URL {
