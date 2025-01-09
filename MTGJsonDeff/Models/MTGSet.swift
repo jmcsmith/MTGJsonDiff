@@ -54,47 +54,7 @@ extension MTGSet {
 }
 
 // MARK: - DataClass
-struct DataClass: Codable {
-    let baseSetSize: Int?
-    let block: String?
-    let booster: DataBooster?
-    let cards: [Card]?
-    let code: String?
-    let isFoilOnly: Bool?
-    let isOnlineOnly: Bool?
-    let keyruneCode: String?
-    let mcmID: Int?
-    let mcmName: String?
-    let mtgoCode: String?
-    let name: String?
-    let releaseDate: String?
-    let tcgplayerGroupID: Int?
-    let tokens: [Token]?
-    let totalSetSize: Int?
-    let translations: Translations?
-    let type: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case baseSetSize = "baseSetSize"
-        case block = "block"
-        case booster = "booster"
-        case cards = "cards"
-        case code = "code"
-        case isFoilOnly = "isFoilOnly"
-        case isOnlineOnly = "isOnlineOnly"
-        case keyruneCode = "keyruneCode"
-        case mcmID = "mcmId"
-        case mcmName = "mcmName"
-        case mtgoCode = "mtgoCode"
-        case name = "name"
-        case releaseDate = "releaseDate"
-        case tcgplayerGroupID = "tcgplayerGroupId"
-        case tokens = "tokens"
-        case totalSetSize = "totalSetSize"
-        case translations = "translations"
-        case type = "type"
-    }
-}
+
 
 // MARK: DataClass convenience initializers and mutators
 
@@ -166,13 +126,7 @@ extension DataClass {
 }
 
 // MARK: - DataBooster
-struct DataBooster: Codable {
-    let boosterDefault: Default?
-    
-    enum CodingKeys: String, CodingKey {
-        case boosterDefault = "default"
-    }
-}
+
 
 // MARK: DataBooster convenience initializers and mutators
 
@@ -210,17 +164,7 @@ extension DataBooster {
 }
 
 // MARK: - Default
-struct Default: Codable {
-    let boosters: [BoosterElement]?
-    let boostersTotalWeight: Int?
-    let sheets: Sheets?
-    
-    enum CodingKeys: String, CodingKey {
-        case boosters = "boosters"
-        case boostersTotalWeight = "boostersTotalWeight"
-        case sheets = "sheets"
-    }
-}
+
 
 // MARK: Default convenience initializers and mutators
 
@@ -262,15 +206,7 @@ extension Default {
 }
 
 // MARK: - BoosterElement
-struct BoosterElement: Codable {
-    let contents: Contents?
-    let weight: Int?
-    
-    enum CodingKeys: String, CodingKey {
-        case contents = "contents"
-        case weight = "weight"
-    }
-}
+
 
 // MARK: BoosterElement convenience initializers and mutators
 
@@ -310,27 +246,7 @@ extension BoosterElement {
 }
 
 // MARK: - Contents
-struct Contents: Codable {
-    let common: Int?
-    let land: Int?
-    let rareMythic: Int?
-    let uncommon: Int?
-    let foil: Int?
-    let rare: Int?
-    let basic: Int?
-    let unhingedFoil: Int?
-    
-    enum CodingKeys: String, CodingKey {
-        case common = "common"
-        case land = "land"
-        case rareMythic = "rareMythic"
-        case uncommon = "uncommon"
-        case foil = "foil"
-        case rare = "rare"
-        case basic = "basic"
-        case unhingedFoil = "unhingedFoil"
-    }
-}
+
 
 // MARK: Contents convenience initializers and mutators
 
@@ -382,27 +298,7 @@ extension Contents {
 }
 
 // MARK: - Sheets
-struct Sheets: Codable {
-    let common: Common?
-    let foil: Basic?
-    let land: Basic?
-    let rareMythic: Basic?
-    let uncommon: Basic?
-    let rare: Basic?
-    let basic: Basic?
-    let unhingedFoil: Basic?
-    
-    enum CodingKeys: String, CodingKey {
-        case common = "common"
-        case foil = "foil"
-        case land = "land"
-        case rareMythic = "rareMythic"
-        case uncommon = "uncommon"
-        case rare = "rare"
-        case basic = "basic"
-        case unhingedFoil = "unhingedFoil"
-    }
-}
+
 
 // MARK: Sheets convenience initializers and mutators
 
@@ -454,17 +350,7 @@ extension Sheets {
 }
 
 // MARK: - Basic
-struct Basic: Codable {
-    let cards: [String: Int]?
-    let foil: Bool?
-    let totalWeight: Int?
-    
-    enum CodingKeys: String, CodingKey {
-        case cards = "cards"
-        case foil = "foil"
-        case totalWeight = "totalWeight"
-    }
-}
+
 
 // MARK: Basic convenience initializers and mutators
 
@@ -506,19 +392,7 @@ extension Basic {
 }
 
 // MARK: - Common
-struct Common: Codable {
-    let balanceColors: Bool?
-    let cards: [String: Int]?
-    let foil: Bool?
-    let totalWeight: Int?
-    
-    enum CodingKeys: String, CodingKey {
-        case balanceColors = "balanceColors"
-        case cards = "cards"
-        case foil = "foil"
-        case totalWeight = "totalWeight"
-    }
-}
+
 
 // MARK: Common convenience initializers and mutators
 
@@ -562,117 +436,7 @@ extension Common {
 }
 
 // MARK: - Card
-struct Card: Codable {
-    let artist: String?
-    let availability: [String]?
-    let borderColor: String?
-    let colorIdentity: [String]?
-    let colors: [String]?
-    let convertedManaCost: Double?
-    let edhrecRank: Int?
-    let flavorText: String?
-    let foreignData: [ForeignDatum]?
-    let frameVersion: String?
-    let hasFoil: Bool?
-    let hasNonFoil: Bool?
-    let identifiers: CardIdentifiers?
-    let isReprint: Bool?
-    let layout: String?
-    let legalities: CardLegalities?
-    let manaCost: String?
-    let name: String?
-    let number: String?
-    let originalText: String?
-    let originalType: String?
-    let printings: [String]?
-    let purchaseUrls: CardPurchaseUrls?
-    let rarity: String?
-    let rulings: [Ruling]?
-    let setCode: String?
-    let subtypes: [String]?
-    let supertypes: [String]?
-    let text: String?
-    let type: String?
-    let types: [String]?
-    let uuid: String?
-    let watermark: String?
-    let keywords: [String]?
-    let power: String?
-    let toughness: String?
-    let variations: [String]?
-    let faceConvertedManaCost: Int?
-    let faceName: String?
-    let otherFaceIDS: [String]?
-    let side: String?
-    let isStarter: Bool?
-    let leadershipSkills: LeadershipSkills?
-    let loyalty: String?
-    let isStorySpotlight: Bool?
-    let frameEffects: [String]?
-    let hasAlternativeDeckLimit: Bool?
-    let isPromo: Bool?
-    let promoTypes: [String]?
-    let isAlternative: Bool?
-    let isFullArt: Bool?
-    let asciiName: String?
-    let isReserved: Bool?
-    
-    enum CodingKeys: String, CodingKey {
-        case artist = "artist"
-        case availability = "availability"
-        case borderColor = "borderColor"
-        case colorIdentity = "colorIdentity"
-        case colors = "colors"
-        case convertedManaCost = "convertedManaCost"
-        case edhrecRank = "edhrecRank"
-        case flavorText = "flavorText"
-        case foreignData = "foreignData"
-        case frameVersion = "frameVersion"
-        case hasFoil = "hasFoil"
-        case hasNonFoil = "hasNonFoil"
-        case identifiers = "identifiers"
-        case isReprint = "isReprint"
-        case layout = "layout"
-        case legalities = "legalities"
-        case manaCost = "manaCost"
-        case name = "name"
-        case number = "number"
-        case originalText = "originalText"
-        case originalType = "originalType"
-        case printings = "printings"
-        case purchaseUrls = "purchaseUrls"
-        case rarity = "rarity"
-        case rulings = "rulings"
-        case setCode = "setCode"
-        case subtypes = "subtypes"
-        case supertypes = "supertypes"
-        case text = "text"
-        case type = "type"
-        case types = "types"
-        case uuid = "uuid"
-        case watermark = "watermark"
-        case keywords = "keywords"
-        case power = "power"
-        case toughness = "toughness"
-        case variations = "variations"
-        case faceConvertedManaCost = "faceConvertedManaCost"
-        case faceName = "faceName"
-        case otherFaceIDS = "otherFaceIds"
-        case side = "side"
-        case isStarter = "isStarter"
-        case leadershipSkills = "leadershipSkills"
-        case loyalty = "loyalty"
-        case isStorySpotlight = "isStorySpotlight"
-        case frameEffects = "frameEffects"
-        case hasAlternativeDeckLimit = "hasAlternativeDeckLimit"
-        case isPromo = "isPromo"
-        case promoTypes = "promoTypes"
-        case isAlternative = "isAlternative"
-        case isFullArt = "isFullArt"
-        case asciiName = "asciiName"
-        case isReserved = "isReserved"
-    }
-}
+
 
 // MARK: Card convenience initializers and mutators
 
@@ -864,8 +628,8 @@ extension Card {
             leadershipSkills?.commander != card.leadershipSkills?.commander ||
             leadershipSkills?.oathbreaker != card.leadershipSkills?.oathbreaker ||
             purchaseUrls?.cardmarket != card.purchaseUrls?.cardmarket ||
-            purchaseUrls?.cardKingdom != card.purchaseUrls?.cardKingdom ||
-            purchaseUrls?.cardKingdomFoil != card.purchaseUrls?.cardKingdomFoil ||
+//            purchaseUrls?.cardKingdom != card.purchaseUrls?.cardKingdom ||
+            //purchaseUrls?.cardKingdomFoil != card.purchaseUrls?.cardKingdomFoil ||
             purchaseUrls?.tcgplayer != card.purchaseUrls?.tcgplayer ||
             legalities?.brawl != card.legalities?.brawl ||
             legalities?.commander != card.legalities?.commander ||
@@ -879,8 +643,8 @@ extension Card {
             legalities?.pioneer != card.legalities?.pioneer ||
             legalities?.standard != card.legalities?.standard ||
             legalities?.vintage != card.legalities?.vintage ||
-            identifiers?.cardKingdomFoilID != card.identifiers?.cardKingdomFoilID ||
-            identifiers?.cardKingdomID != card.identifiers?.cardKingdomID ||
+            //identifiers?.cardKingdomFoilID != card.identifiers?.cardKingdomFoilID ||
+//            identifiers?.cardKingdomID != card.identifiers?.cardKingdomID ||
             identifiers?.mcmID != card.identifiers?.mcmID ||
             identifiers?.mcmMetaID != card.identifiers?.mcmMetaID ||
             identifiers?.mtgArenaID != card.identifiers?.mtgArenaID ||
@@ -971,105 +735,14 @@ extension Card {
 }
 
 // MARK: - ForeignDatum
-struct ForeignDatum: Codable {
-    let flavorText: String?
-    let language: String?
-    let multiverseID: Int?
-    let name: String?
-    let text: String?
-    let type: String?
-    let faceName: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case flavorText = "flavorText"
-        case language = "language"
-        case multiverseID = "multiverseId"
-        case name = "name"
-        case text = "text"
-        case type = "type"
-        case faceName = "faceName"
-    }
-}
+
 
 // MARK: ForeignDatum convenience initializers and mutators
 
-extension ForeignDatum {
-    init(data: Data) throws {
-        self = try newJSONDecoder().decode(ForeignDatum.self, from: data)
-    }
-    
-    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
-        guard let data = json.data(using: encoding) else {
-            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
-        }
-        try self.init(data: data)
-    }
-    
-    init(fromURL url: URL) throws {
-        try self.init(data: try Data(contentsOf: url))
-    }
-    
-    func with(
-        flavorText: String?? = nil,
-        language: String?? = nil,
-        multiverseID: Int?? = nil,
-        name: String?? = nil,
-        text: String?? = nil,
-        type: String?? = nil,
-        faceName: String?? = nil
-    ) -> ForeignDatum {
-        return ForeignDatum(
-            flavorText: flavorText ?? self.flavorText,
-            language: language ?? self.language,
-            multiverseID: multiverseID ?? self.multiverseID,
-            name: name ?? self.name,
-            text: text ?? self.text,
-            type: type ?? self.type,
-            faceName: faceName ?? self.faceName
-        )
-    }
-    
-    func jsonData() throws -> Data {
-        return try newJSONEncoder().encode(self)
-    }
-    
-    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
-        return String(data: try self.jsonData(), encoding: encoding)
-    }
-}
+
 
 // MARK: - CardIdentifiers
-struct CardIdentifiers: Codable {
-    let cardKingdomFoilID: String?
-    let cardKingdomID: String?
-    let mcmID: String?
-    let mcmMetaID: String?
-    let mtgArenaID: String?
-    let mtgjsonV4ID: String?
-    let mtgoID: String?
-    let multiverseID: String?
-    let scryfallID: String?
-    let scryfallIllustrationID: String?
-    let scryfallOracleID: String?
-    let tcgplayerProductID: String?
-    let mtgoFoilID: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case cardKingdomFoilID = "cardKingdomFoilId"
-        case cardKingdomID = "cardKingdomId"
-        case mcmID = "mcmId"
-        case mcmMetaID = "mcmMetaId"
-        case mtgArenaID = "mtgArenaId"
-        case mtgjsonV4ID = "mtgjsonV4Id"
-        case mtgoID = "mtgoId"
-        case multiverseID = "multiverseId"
-        case scryfallID = "scryfallId"
-        case scryfallIllustrationID = "scryfallIllustrationId"
-        case scryfallOracleID = "scryfallOracleId"
-        case tcgplayerProductID = "tcgplayerProductId"
-        case mtgoFoilID = "mtgoFoilId"
-    }
-}
+
 
 // MARK: CardIdentifiers convenience initializers and mutators
 
@@ -1131,17 +804,7 @@ extension CardIdentifiers {
 }
 
 // MARK: - LeadershipSkills
-struct LeadershipSkills: Codable {
-    let brawl: Bool?
-    let commander: Bool?
-    let oathbreaker: Bool?
-    
-    enum CodingKeys: String, CodingKey {
-        case brawl = "brawl"
-        case commander = "commander"
-        case oathbreaker = "oathbreaker"
-    }
-}
+
 
 // MARK: LeadershipSkills convenience initializers and mutators
 
@@ -1183,35 +846,7 @@ extension LeadershipSkills {
 }
 
 // MARK: - CardLegalities
-struct CardLegalities: Codable {
-    let commander: String?
-    let duel: String?
-    let historic: String?
-    let legacy: String?
-    let modern: String?
-    let pioneer: String?
-    let vintage: String?
-    let pauper: String?
-    let penny: String?
-    let brawl: String?
-    let future: String?
-    let standard: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case commander = "commander"
-        case duel = "duel"
-        case historic = "historic"
-        case legacy = "legacy"
-        case modern = "modern"
-        case pioneer = "pioneer"
-        case vintage = "vintage"
-        case pauper = "pauper"
-        case penny = "penny"
-        case brawl = "brawl"
-        case future = "future"
-        case standard = "standard"
-    }
-}
+
 
 // MARK: CardLegalities convenience initializers and mutators
 
@@ -1271,19 +906,7 @@ extension CardLegalities {
 }
 
 // MARK: - CardPurchaseUrls
-struct CardPurchaseUrls: Codable {
-    let cardKingdom: String?
-    let cardKingdomFoil: String?
-    let cardmarket: String?
-    let tcgplayer: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case cardKingdom = "cardKingdom"
-        case cardKingdomFoil = "cardKingdomFoil"
-        case cardmarket = "cardmarket"
-        case tcgplayer = "tcgplayer"
-    }
-}
+
 
 // MARK: CardPurchaseUrls convenience initializers and mutators
 
@@ -1327,15 +950,7 @@ extension CardPurchaseUrls {
 }
 
 // MARK: - Ruling
-struct Ruling: Codable {
-    let date: String?
-    let text: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case date = "date"
-        case text = "text"
-    }
-}
+
 
 // MARK: Ruling convenience initializers and mutators
 
@@ -1375,97 +990,7 @@ extension Ruling {
 }
 
 // MARK: - Token
-struct Token: Codable {
-    let artist: String?
-    let availability: [String]?
-    let borderColor: String?
-    let colorIdentity: [String]?
-    let colors: [String]?
-    let frameVersion: String?
-    let hasFoil: Bool?
-    let hasNonFoil: Bool?
-    let identifiers: TokenIdentifiers?
-    let keywords: [String]?
-    let layout: String?
-    let name: String?
-    let number: String?
-    let power: String?
-    let reverseRelated: [String]?
-    let setCode: String?
-    let subtypes: [String]?
-    let supertypes: [String]?
-    let text: String?
-    let toughness: String?
-    let type: String?
-    let types: [String]?
-    let uuid: String?
-    let watermark: String?
-    let isReprint: Bool?
-    let convertedManaCost: Int?
-    let edhrecRank: Int?
-    let flavorText: String?
-    let foreignData: [JSONAny]?
-    let isPromo: Bool?
-    let isStarter: Bool?
-    let legalities: TokenLegalities?
-    let manaCost: String?
-    let printings: [String]?
-    let promoTypes: [String]?
-    let purchaseUrls: TokenPurchaseUrls?
-    let rarity: String?
-    let rulings: [Ruling]?
-    let isFullArt: Bool?
-    let variations: [String]?
-    let frameEffects: [String]?
-    let leadershipSkills: LeadershipSkills?
-    let originalReleaseDate: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case artist = "artist"
-        case availability = "availability"
-        case borderColor = "borderColor"
-        case colorIdentity = "colorIdentity"
-        case colors = "colors"
-        case frameVersion = "frameVersion"
-        case hasFoil = "hasFoil"
-        case hasNonFoil = "hasNonFoil"
-        case identifiers = "identifiers"
-        case keywords = "keywords"
-        case layout = "layout"
-        case name = "name"
-        case number = "number"
-        case power = "power"
-        case reverseRelated = "reverseRelated"
-        case setCode = "setCode"
-        case subtypes = "subtypes"
-        case supertypes = "supertypes"
-        case text = "text"
-        case toughness = "toughness"
-        case type = "type"
-        case types = "types"
-        case uuid = "uuid"
-        case watermark = "watermark"
-        case isReprint = "isReprint"
-        case convertedManaCost = "convertedManaCost"
-        case edhrecRank = "edhrecRank"
-        case flavorText = "flavorText"
-        case foreignData = "foreignData"
-        case isPromo = "isPromo"
-        case isStarter = "isStarter"
-        case legalities = "legalities"
-        case manaCost = "manaCost"
-        case printings = "printings"
-        case promoTypes = "promoTypes"
-        case purchaseUrls = "purchaseUrls"
-        case rarity = "rarity"
-        case rulings = "rulings"
-        case isFullArt = "isFullArt"
-        case variations = "variations"
-        case frameEffects = "frameEffects"
-        case leadershipSkills = "leadershipSkills"
-        case originalReleaseDate = "originalReleaseDate"
-    }
-}
+
 
 // MARK: Token convenience initializers and mutators
 
@@ -1587,25 +1112,7 @@ extension Token {
 }
 
 // MARK: - TokenIdentifiers
-struct TokenIdentifiers: Codable {
-    let mtgjsonV4ID: String?
-    let scryfallID: String?
-    let scryfallIllustrationID: String?
-    let scryfallOracleID: String?
-    let tcgplayerProductID: String?
-    let cardKingdomFoilID: String?
-    let cardKingdomID: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case mtgjsonV4ID = "mtgjsonV4Id"
-        case scryfallID = "scryfallId"
-        case scryfallIllustrationID = "scryfallIllustrationId"
-        case scryfallOracleID = "scryfallOracleId"
-        case tcgplayerProductID = "tcgplayerProductId"
-        case cardKingdomFoilID = "cardKingdomFoilId"
-        case cardKingdomID = "cardKingdomId"
-    }
-}
+
 
 // MARK: TokenIdentifiers convenience initializers and mutators
 
@@ -1655,27 +1162,7 @@ extension TokenIdentifiers {
 }
 
 // MARK: - TokenLegalities
-struct TokenLegalities: Codable {
-    let commander: String?
-    let duel: String?
-    let legacy: String?
-    let modern: String?
-    let pioneer: String?
-    let vintage: String?
-    let penny: String?
-    let historic: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case commander = "commander"
-        case duel = "duel"
-        case legacy = "legacy"
-        case modern = "modern"
-        case pioneer = "pioneer"
-        case vintage = "vintage"
-        case penny = "penny"
-        case historic = "historic"
-    }
-}
+
 
 // MARK: TokenLegalities convenience initializers and mutators
 
@@ -1727,17 +1214,7 @@ extension TokenLegalities {
 }
 
 // MARK: - TokenPurchaseUrls
-struct TokenPurchaseUrls: Codable {
-    let cardKingdom: String?
-    let cardKingdomFoil: String?
-    let tcgplayer: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case cardKingdom = "cardKingdom"
-        case cardKingdomFoil = "cardKingdomFoil"
-        case tcgplayer = "tcgplayer"
-    }
-}
+
 
 // MARK: TokenPurchaseUrls convenience initializers and mutators
 
@@ -1779,31 +1256,7 @@ extension TokenPurchaseUrls {
 }
 
 // MARK: - Translations
-struct Translations: Codable {
-    let chineseSimplified: String?
-    let chineseTraditional: String?
-    let french: String?
-    let german: String?
-    let italian: String?
-    let japanese: String?
-    let korean: String?
-    let portugueseBrazil: String?
-    let russian: String?
-    let spanish: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case chineseSimplified = "Chinese Simplified"
-        case chineseTraditional = "Chinese Traditional"
-        case french = "French"
-        case german = "German"
-        case italian = "Italian"
-        case japanese = "Japanese"
-        case korean = "Korean"
-        case portugueseBrazil = "Portuguese (Brazil)"
-        case russian = "Russian"
-        case spanish = "Spanish"
-    }
-}
+
 
 // MARK: Translations convenience initializers and mutators
 
@@ -1859,15 +1312,7 @@ extension Translations {
 }
 
 // MARK: - Meta
-struct Meta: Codable {
-    let date: String?
-    let version: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case date = "date"
-        case version = "version"
-    }
-}
+
 
 // MARK: Meta convenience initializers and mutators
 

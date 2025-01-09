@@ -55,7 +55,7 @@ class JsonDownloader {
                                     continue
                                 }
                                 print("\(set.data?.code ?? ""): \(set.data?.cards?.count ?? 0)")
-                                let setDTO = UpdateSetDTO(code: set.data?.code ?? "")
+           
                                 
                                 //get previous set
                                 let setLastPull = oldFiles.first {
@@ -89,38 +89,43 @@ class JsonDownloader {
                                             if let oldCard = oldSet.data?.cards?.first(where: { $0.uuid == newCard.uuid }) {
                                                 if !newCard.compareTo(card: oldCard) {
                                                     if let uuid = newCard.uuid {
-                                                        //add the card to the setDTO
-                                                        let c = UpdateCardDTO(uuid: uuid, json: try self.replaceNewlines(with: newCard.jsonString(encoding:.utf8) ?? ""))
-                                                        setDTO.cards.append(c)
+                                                        //add the card to the update
+                                                        updateDTO.updatedCards.append(UpdateCardDTO(cardUUID: uuid, cardJSON: try self.replaceNewlines(with: newCard.jsonString(encoding:.utf8) ?? "")))
+//                                                        let c = UpdateCardDTO(uuid: uuid, json: try self.replaceNewlines(with: newCard.jsonString(encoding:.utf8) ?? ""))
+//                                                        setDTO.cards.append(c)
                                                     }
                                                 }
                                             } else {
                                                 if let code = set.data?.code, let uuid = newCard.uuid {
                                                     print("\(code) has a new card: \(String(describing: newCard.name))")
                                                     //add the card to the setDTO
-                                                    let c = UpdateCardDTO(uuid: uuid, json: try self.replaceNewlines(with: newCard.jsonString(encoding:.utf8) ?? ""))
-                                                    setDTO.cards.append(c)
+                                                    let c = UpdateCardDTO(cardUUID: uuid, cardJSON: try self.replaceNewlines(with: newCard.jsonString(encoding:.utf8) ?? ""))
+                                                    //setDTO.cards.append(c)
+                                                    updateDTO.updatedCards.append(c)
                                                 }
                                             }
                                         }
                          
                                         //if setDTO.cards.count > 0 add to the UpdateDTO, else dont
-                                        if setDTO.cards.count > 0 {
-                                            updateDTO.sets.append(setDTO)
-                                        }
+//                                        if setDTO.cards.count > 0 {
+//                                            print("\(setDTO.code) updating \(setDTO.cards.count) cards.")
+//                                            updateDTO.sets.append(setDTO)
+//                                        }
                                     }
                                 } else {
                                     if let code = set.data?.code {
                                         print("\(code) does not exist in prior run")
 
+                                        updateDTO.newSetCodes.append(code)
                                         //add all cards to the setDTO and add setDTO to UpdateDTO
-                                        for card in set.data?.cards ?? [] {
-                                            let c = UpdateCardDTO(uuid: card.uuid ?? "", json: try self.replaceNewlines(with: card.jsonString(encoding:.utf8) ?? ""))
-                                            setDTO.cards.append(c)
-                                        }
-                                        if setDTO.cards.count > 0 {
-                                            updateDTO.sets.append(setDTO)
-                                        }
+//                                        for card in set.data?.cards ?? [] {
+//                                            let c = UpdateCardDTO(uuid: card.uuid ?? "", json: try self.replaceNewlines(with: card.jsonString(encoding:.utf8) ?? ""))
+//                                            setDTO.cards.append(c)
+//                                        }
+//                                        if setDTO.cards.count > 0 {
+//                                            updateDTO.sets.append(setDTO)
+//                                            print("\(setDTO.code) updating \(setDTO.cards.count) cards.")
+//                                        }
                                     }
                                     continue
                                 }
@@ -134,9 +139,10 @@ class JsonDownloader {
                             dateFormatter.calendar = Calendar(identifier: .gregorian)
                             
                             //if updateDTO has sets write file
-                            if updateDTO.sets.count > 0 {
+                            if updateDTO.newSetCodes.count > 0 || updateDTO.updatedCards.count > 0 || updateDTO.updatedTokens.count > 0 {
                                 self.writeDTOtoFile(updates: updateDTO)
                                 Task {
+                                    print("Posting to API")
                                     await self.postToAPIAsync(update: updateDTO)
                                 }
                             } else {

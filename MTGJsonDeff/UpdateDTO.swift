@@ -8,8 +8,10 @@
 import Foundation
 
 final class UpdateDTO: Codable {
+    var newSetCodes: [String] = []
+    var updatedCards: [UpdateCardDTO] = []
+    var updatedTokens: [UpdateTokenDTO] = []
     var updateDate: Date = Date()
-    var sets: [UpdateSetDTO] = []
     
     func jsonData() throws -> Data {
         return try newJSONEncoder().encode(self)
@@ -18,20 +20,22 @@ final class UpdateDTO: Codable {
         return String(data: try self.jsonData(), encoding: encoding)
     }
 }
-final class UpdateSetDTO: Codable {
-    var code: String
-    var cards: [UpdateCardDTO] = []
+
+struct UpdateCardDTO: Codable {
+    var cardUUID: String
+    var cardJSON: String
     
-    init(code: String) {
-        self.code = code
+    init(cardUUID: String, cardJSON: String) {
+        self.cardUUID = cardUUID
+        self.cardJSON = cardJSON
     }
 }
-final class UpdateCardDTO: Codable {
-    var uuid: String
-    var json: String
+struct UpdateTokenDTO: Codable {
+    var tokenUUID: String
+    var tokenJSON: String
     
-    init(uuid: String, json: String) {
-        self.uuid = uuid
-        self.json = json
+    init(tokenUUID: String, tokenJSON: String) {
+        self.tokenUUID = tokenUUID
+        self.tokenJSON = tokenJSON
     }
 }
