@@ -37,3 +37,57 @@ struct CardLegalities: Codable {
         case standard = "standard"
     }
 }
+extension CardLegalities {
+    init(data: Data) throws {
+        self = try newJSONDecoder().decode(CardLegalities.self, from: data)
+    }
+    
+    init(_ json: String, using encoding: String.Encoding = .utf8) throws {
+        guard let data = json.data(using: encoding) else {
+            throw NSError(domain: "JSONDecoding", code: 0, userInfo: nil)
+        }
+        try self.init(data: data)
+    }
+    
+    init(fromURL url: URL) throws {
+        try self.init(data: try Data(contentsOf: url))
+    }
+    
+    func with(
+        commander: String?? = nil,
+        duel: String?? = nil,
+        historic: String?? = nil,
+        legacy: String?? = nil,
+        modern: String?? = nil,
+        pioneer: String?? = nil,
+        vintage: String?? = nil,
+        pauper: String?? = nil,
+        penny: String?? = nil,
+        brawl: String?? = nil,
+        future: String?? = nil,
+        standard: String?? = nil
+    ) -> CardLegalities {
+        return CardLegalities(
+            commander: commander ?? self.commander,
+            duel: duel ?? self.duel,
+            historic: historic ?? self.historic,
+            legacy: legacy ?? self.legacy,
+            modern: modern ?? self.modern,
+            pioneer: pioneer ?? self.pioneer,
+            vintage: vintage ?? self.vintage,
+            pauper: pauper ?? self.pauper,
+            penny: penny ?? self.penny,
+            brawl: brawl ?? self.brawl,
+            future: future ?? self.future,
+            standard: standard ?? self.standard
+        )
+    }
+    
+    func jsonData() throws -> Data {
+        return try newJSONEncoder().encode(self)
+    }
+    
+    func jsonString(encoding: String.Encoding = .utf8) throws -> String? {
+        return String(data: try self.jsonData(), encoding: encoding)
+    }
+}

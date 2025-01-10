@@ -112,6 +112,24 @@ class JsonDownloader {
 //                                            updateDTO.sets.append(setDTO)
 //                                        }
                                     }
+                                    if let tokens = set.data?.tokens {
+                                        //do token compare and add to DTO
+                                        for newToken in tokens {
+                                            if let oldToken = oldSet.data?.tokens?.first(where: { $0.uuid == newToken.uuid }) {
+                                                if !newToken.compareTo(token: oldToken) {
+                                                    if let uuid = newToken.uuid {
+                                                        updateDTO.updatedTokens.append(UpdateTokenDTO(tokenUUID: uuid, tokenJSON: try self.replaceNewlines(with: newToken.jsonString(encoding:.utf8) ?? "")))
+                                                    }
+                                                }
+                                            }
+                                            
+                                            else {
+                                                if let uuid = newToken.uuid {
+                                                    updateDTO.updatedTokens.append(UpdateTokenDTO(tokenUUID: uuid, tokenJSON: try self.replaceNewlines(with: newToken.jsonString(encoding:.utf8) ?? "")))
+                                                }
+                                            }
+                                        }
+                                    }
                                 } else {
                                     if let code = set.data?.code {
                                         print("\(code) does not exist in prior run")
