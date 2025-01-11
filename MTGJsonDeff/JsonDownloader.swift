@@ -194,7 +194,7 @@ func postToAPIAsync(update: UpdateDTO) async {
         return
     }
     writeUpdateDatatoFile(updates: uploadData)
-    let url = URL(string: "http://10.0.0.177:8080/updates")!
+    let url = URL(string: "http://10.0.0.177:8081/updates")!
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
