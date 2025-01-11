@@ -24,18 +24,22 @@ final class UpdateDTO: Codable {
 struct UpdateCardDTO: Codable {
     var cardUUID: String
     var cardJSON: String
+    var cardSetCode: String
     
-    init(cardUUID: String, cardJSON: String) {
+    init(cardUUID: String, cardJSON: String, cardSetCode: String) {
         self.cardUUID = cardUUID
         self.cardJSON = cardJSON
+        self.cardSetCode = cardSetCode
     }
 }
 struct UpdateTokenDTO: Codable {
     var tokenUUID: String
     var tokenJSON: String
+    var tokenSetCode: String
     
-    init(tokenUUID: String, tokenJSON: String) {
+    init(tokenUUID: String, tokenJSON: String, tokenSetCode: String) {
         self.tokenUUID = tokenUUID
         self.tokenJSON = tokenJSON
+        self.tokenSetCode = tokenSetCode
     }
 }

@@ -208,6 +208,137 @@ extension Token {
         )
     }
     
+    func compareTo(token: Token) -> Bool {
+        if artist != token.artist ||
+            availability != token.availability ||
+            borderColor != token.borderColor ||
+            colorIdentity != token.colorIdentity ||
+            colors?.count != token.colors?.count ||
+            convertedManaCost != token.convertedManaCost ||
+            flavorText != token.flavorText ||
+            foreignData?.count != token.foreignData?.count ||
+            frameVersion != token.frameVersion ||
+            hasFoil != token.hasFoil ||
+            hasNonFoil != token.hasNonFoil ||
+            isReprint != token.isReprint ||
+            layout != token.layout ||
+            manaCost != token.manaCost ||
+            name != token.name ||
+            number != token.number ||
+            printings?.count != token.printings?.count ||
+            rarity != token.rarity ||
+            rulings?.count != token.rulings?.count ||
+            setCode != token.setCode ||
+            subtypes?.count != token.subtypes?.count ||
+            supertypes?.count != token.supertypes?.count ||
+            text != token.text ||
+            type != token.type ||
+            types?.count != token.types?.count ||
+            uuid != token.uuid ||
+            watermark != token.watermark ||
+            keywords?.count != token.keywords?.count ||
+            power != token.power ||
+            toughness != token.toughness ||
+            variations?.count != token.variations?.count ||
+            isStarter != token.isStarter ||
+            frameEffects?.count != token.frameEffects?.count ||
+            isPromo != token.isPromo ||
+            promoTypes?.count != token.promoTypes?.count ||
+            isFullArt != token.isFullArt ||
+            leadershipSkills?.brawl != token.leadershipSkills?.brawl ||
+            leadershipSkills?.commander != token.leadershipSkills?.commander ||
+            leadershipSkills?.oathbreaker != token.leadershipSkills?.oathbreaker ||
+//            purchaseUrls?.cardKingdom != card.purchaseUrls?.cardKingdom ||
+            //purchaseUrls?.cardKingdomFoil != card.purchaseUrls?.cardKingdomFoil ||
+            purchaseUrls?.tcgplayer != token.purchaseUrls?.tcgplayer ||
+            legalities?.commander != token.legalities?.commander ||
+            legalities?.duel != token.legalities?.duel ||
+            legalities?.historic != token.legalities?.historic ||
+            legalities?.legacy != token.legalities?.legacy ||
+            legalities?.modern != token.legalities?.modern ||
+            legalities?.penny != token.legalities?.penny ||
+            legalities?.pioneer != token.legalities?.pioneer ||
+            legalities?.vintage != token.legalities?.vintage ||
+            //identifiers?.cardKingdomFoilID != card.identifiers?.cardKingdomFoilID ||
+//            identifiers?.cardKingdomID != card.identifiers?.cardKingdomID ||
+
+            identifiers?.mtgjsonV4ID != token.identifiers?.mtgjsonV4ID ||
+
+            identifiers?.scryfallID != token.identifiers?.scryfallID ||
+            identifiers?.scryfallIllustrationID != token.identifiers?.scryfallIllustrationID ||
+            identifiers?.scryfallOracleID != token.identifiers?.scryfallOracleID ||
+            identifiers?.tcgplayerProductID != token.identifiers?.tcgplayerProductID
+            {
+            return false
+        } else {
+            //promoTypes: [String]?? = nil,
+            if let pt = promoTypes?.sorted(), let oldpt = token.promoTypes?.sorted() {
+                if !pt.elementsEqual(oldpt) {
+                    return false
+                }
+            }
+            //frameEffects: [String]?? = nil,
+            if let n = frameEffects?.sorted(), let old = token.frameEffects?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //colors: [String]?? = nil,
+            if let n = colors?.sorted(), let old = token.colors?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //variations: [String]?? = nil,
+            if let n = variations?.sorted(), let old = token.variations?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //keywords: [String]?? = nil,
+            if let n = keywords?.sorted(), let old = token.keywords?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //types: [String]?? = nil,
+            if let n = types?.sorted(), let old = token.types?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //supertypes: [String]?? = nil,
+            if let n = supertypes?.sorted(), let old = token.supertypes?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //subtypes: [String]?? = nil,
+            if let n = subtypes?.sorted(), let old = token.subtypes?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            //printings: [String]?? = nil,
+            if let n = printings?.sorted(), let old = token.printings?.sorted() {
+                if !n.elementsEqual(old) {
+                    return false
+                }
+            }
+            if let newRulings = rulings, let oldRulings = token.rulings {
+                for ruling in newRulings {
+                    let old = oldRulings.first(where: { $0.date == ruling.date && $0.text == ruling.text })
+                    if old != nil {
+                        continue
+                    } else {
+                        return false
+                    }
+                }
+            }
+            return true
+        }
+    }
+    
     func jsonData() throws -> Data {
         return try newJSONEncoder().encode(self)
     }
