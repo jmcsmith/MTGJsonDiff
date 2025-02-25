@@ -9,6 +9,7 @@ import Foundation
 import Zip
 
 class JsonDownloader {
+    var webhookURL: String = "https://discord.com/api/webhooks/1343658207868096532/cCFjOArH4yzGFLkXaybO8cClLs9hFSqGeSCyPQiPlnBPGbxl2gIIOWDwHJBrERFIZ9Qs"
     func download() {
         print("Run Date: \(Date())")
         print(FileManager.default.currentDirectoryPath)
@@ -18,7 +19,7 @@ class JsonDownloader {
         
         if let url = URL(string: setFileZipURL) {
             do {
-                try url.download(to: .downloadsDirectory, overwrite: true){ url, error in
+                try url.download(to: .downloadsDirectory, overwrite: true) { url, error in
                     guard let url = url else { return }
                     print(url)
                     do {
@@ -94,142 +95,233 @@ class JsonDownloader {
                                             }
                                         }
                                     }
-                                if let tokens = set.data?.tokens {
-                                    //do token compare and add to DTO
-                                    for newToken in tokens {
-                                        let oldToken = oldSet.data?.tokens?.first(where: { $0.uuid == newToken.uuid })
-                                        if oldToken == nil || !newToken.compareTo(token: oldToken!) {
-                                            if let uuid = newToken.uuid, let code = set.data?.code {
-                                                updateDTO.updatedTokens.append(UpdateTokenDTO(tokenUUID: uuid, tokenJSON: try self.replaceNewlines(with: newToken.jsonString(encoding:.utf8) ?? ""), tokenSetCode: code))
+                                    if let tokens = set.data?.tokens {
+                                        //do token compare and add to DTO
+                                        for newToken in tokens {
+                                            let oldToken = oldSet.data?.tokens?.first(where: { $0.uuid == newToken.uuid })
+                                            if oldToken == nil || !newToken.compareTo(token: oldToken!) {
+                                                if let uuid = newToken.uuid, let code = set.data?.code {
+                                                    updateDTO.updatedTokens.append(UpdateTokenDTO(tokenUUID: uuid, tokenJSON: try self.replaceNewlines(with: newToken.jsonString(encoding:.utf8) ?? ""), tokenSetCode: code))
+                                                }
                                             }
                                         }
                                     }
+                                } else {
+                                    if let code = set.data?.code {
+                                        print("\(code) does not exist in prior run")
+                                        updateDTO.newSetCodes.append(code)
+                                    }
+                                    continue
+                                }
+                            }
+                            print("Done")
+                            let dateFormatter = DateFormatter()
+                            let enUSPosixLocale = Locale(identifier: "en_US_POSIX")
+                            dateFormatter.locale = enUSPosixLocale
+                            dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+                            dateFormatter.calendar = Calendar(identifier: .gregorian)
+                            
+                            //if updateDTO has sets write file
+                            if updateDTO.newSetCodes.count > 0 || updateDTO.updatedCards.count > 0 || updateDTO.updatedTokens.count > 0 {
+                                self.writeDTOtoFile(updates: updateDTO)
+                                Task {
+                                    print("Posting to API")
+                                    await self.postToAPIAsync(update: updateDTO)
                                 }
                             } else {
-                                if let code = set.data?.code {
-                                    print("\(code) does not exist in prior run")
-                                    updateDTO.newSetCodes.append(code)
+                                print("No sets to update")
+                                Task {
+                                    await self.postToWebHookSuccess(cardCount: 0, tokenCount: 0, setCount: 0, updateDate: updateDTO.updateDate)
                                 }
-                                continue
                             }
-                        }
-                        print("Done")
-                        let dateFormatter = DateFormatter()
-                        let enUSPosixLocale = Locale(identifier: "en_US_POSIX")
-                        dateFormatter.locale = enUSPosixLocale
-                        dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-                        dateFormatter.calendar = Calendar(identifier: .gregorian)
-                        
-                        //if updateDTO has sets write file
-                        if updateDTO.newSetCodes.count > 0 || updateDTO.updatedCards.count > 0 || updateDTO.updatedTokens.count > 0 {
-                            self.writeDTOtoFile(updates: updateDTO)
+                            //move from current to dates folder
+                            archiveURL = archiveURL.appendingPathComponent("\(formatter1.string(from: Date()))")
+                            try FileManager.default.createDirectory(at: archiveURL, withIntermediateDirectories: true, attributes: nil)
+                            let files = try FileManager.default.contentsOfDirectory(at: destinationUrl, includingPropertiesForKeys: nil)
+                            for file in files {
+                                try FileManager.default.moveItem(at: file , to: archiveURL.appendingPathComponent(file.lastPathComponent))
+                            }
+                        } catch {
+                            print("error getting files")
+                            print(error)
                             Task {
-                                print("Posting to API")
-                                await self.postToAPIAsync(update: updateDTO)
+                                await self.postToWebHookFaiulre(error: error, updateDate: Date())
                             }
-                        } else {
-                            print("No sets to update")
                         }
-                        //move from current to dates folder
-                        archiveURL = archiveURL.appendingPathComponent("\(formatter1.string(from: Date()))")
-                        try FileManager.default.createDirectory(at: archiveURL, withIntermediateDirectories: true, attributes: nil)
-                        let files = try FileManager.default.contentsOfDirectory(at: destinationUrl, includingPropertiesForKeys: nil)
-                        for file in files {
-                            try FileManager.default.moveItem(at: file , to: archiveURL.appendingPathComponent(file.lastPathComponent))
+                    }
+                    catch {
+                        print("Something went wrong")
+                        print(error.localizedDescription)
+                        Task {
+                            await self.postToWebHookFaiulre(error: error, updateDate: Date())
                         }
-                    } catch {
-                        print("error getting files")
-                        print(error)
-                        
                     }
                 }
-                catch {
-                    print("Something went wrong")
-                    print(error.localizedDescription)
+                
+            } catch {
+                print(error)
+            }
+        }
+    }
+    func writeUpdateFile(updates: Updates) {
+        do {
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updates.json")
+            let str = try updates.jsonString()
+            try str?.write(to: url, atomically: true, encoding: .utf8)
+        }
+        catch {
+            print(error )
+        }
+    }
+    func writeDTOtoFile(updates: UpdateDTO) {
+        do {
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updateDTO.json")
+            let str = try updates.jsonString()
+            try str?.write(to: url, atomically: true, encoding: .utf8)
+            print("DTO File Written to disk.")
+        }
+        catch {
+            print(error )
+        }
+    }
+    func writeUpdateDatatoFile(updates: Data) {
+        do {
+            let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updateData.json")
+            
+            let str = String(decoding: updates, as: UTF8.self)
+            try str.write(to: url, atomically: true, encoding: .utf8)
+            print("Update Data File Written to disk.")
+        }
+        catch {
+            print(error )
+        }
+    }
+    
+    func postToAPIAsync(update: UpdateDTO) async {
+        
+        guard let uploadData = try? newJSONEncoder().encode(update) else {
+            return
+        }
+        writeUpdateDatatoFile(updates: uploadData)
+        let url = URL(string: "http://10.0.0.177:8081/updates")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            
+            let (data, response) = try await URLSession.shared.upload(for: request, from: uploadData)
+            if let httpResponse = response as? HTTPURLResponse {
+                if httpResponse.statusCode != 200 {
+                    print("Post to API failed: \(httpResponse.statusCode)")
                 }
+                if httpResponse.statusCode == 200 {
+                    await postToWebHookSuccess(cardCount: update.updatedCards.count, tokenCount: update.updatedTokens.count, setCount: update.newSetCodes.count, updateDate: update.updateDate)
+                }
+                print(httpResponse)
+                let outputStr  = String(data: data, encoding: String.Encoding.utf8) as String?
+                
+                print(outputStr ?? "")
             }
             
+            // handle the result
+        } catch {
+            print("Checkout failed: \(error.localizedDescription)")
+            await postToWebHookFaiulre(error: error, updateDate: update.updateDate)
+        }
+    }
+    func postToWebHookSuccess(cardCount: Int, tokenCount: Int, setCount: Int, updateDate: Date) async {
+        let url = URL(string: webhookURL)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        var color = 65280;
+        if cardCount == 0 && tokenCount == 0 && setCount == 0 {
+            color = 8421504
+        }
+        let uploadJSON = """
+        {
+            "content": "My MTG Card data updated. \(updateDate.description)",
+            "embeds": [
+                {
+                    "color": \(color),
+                    "fields": [
+                        {
+                            "name": "Cards",
+                            "value": "\(cardCount)",
+                            "inline": true
+                        },
+                        {
+                            "name": "Tokens",
+                            "value": "\(tokenCount)",
+                            "inline": true
+                        },
+                        {
+                            "name": "Sets",
+                            "value": "\(setCount)",
+                            "inline": true
+                        }
+                    ]
+                }
+            ]
+        }
+        """.data(using: .utf8)!
+        
+        
+        do {
+            let (_, _) = try await URLSession.shared.upload(for: request, from: uploadJSON)
         } catch {
             print(error)
         }
     }
-}
-func writeUpdateFile(updates: Updates) {
-    do {
-        let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updates.json")
-        let str = try updates.jsonString()
-        try str?.write(to: url, atomically: true, encoding: .utf8)
-    }
-    catch {
-        print(error )
-    }
-}
-func writeDTOtoFile(updates: UpdateDTO) {
-    do {
-        let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updateDTO.json")
-        let str = try updates.jsonString()
-        try str?.write(to: url, atomically: true, encoding: .utf8)
-        print("DTO File Written to disk.")
-    }
-    catch {
-        print(error )
-    }
-}
-func writeUpdateDatatoFile(updates: Data) {
-    do {
-        let url = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("updateData.json")
+    func postToWebHookFaiulre(error: Error, updateDate: Date) async {
+        let url = URL(string: webhookURL)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let str = String(decoding: updates, as: UTF8.self)
-        try str.write(to: url, atomically: true, encoding: .utf8)
-        print("Update Data File Written to disk.")
-    }
-    catch {
-        print(error )
-    }
-}
-
-func postToAPIAsync(update: UpdateDTO) async {
-    
-    guard let uploadData = try? newJSONEncoder().encode(update) else {
-        return
-    }
-    writeUpdateDatatoFile(updates: uploadData)
-    let url = URL(string: "http://10.0.0.177:8081/updates")!
-    var request = URLRequest(url: url)
-    request.httpMethod = "POST"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    
-    do {
         
-        let (data, response) = try await URLSession.shared.upload(for: request, from: uploadData)
-        if let httpResponse = response as? HTTPURLResponse {
-            if httpResponse.statusCode != 200 {
-                print("Post to API failed: \(httpResponse.statusCode)")
-            }
-            print(httpResponse)
-            let outputStr  = String(data: data, encoding: String.Encoding.utf8) as String?
-            
-            print(outputStr ?? "")
+        let uploadJSON = """
+        {
+            "content": "My MTG Card date diff Failed. \(updateDate.description)",
+            "embeds": [
+                {
+                    "color": 16711680,
+                    "fields": [
+                        {
+                            "name": "Error Message",
+                            "value": "\(error.localizedDescription)"
+                        },
+                        {
+                            "name": "Error",
+                            "value": "\(error)"
+                        }
+                    ]
+                }
+            ]
         }
+        """.data(using: .utf8)!
         
-        // handle the result
-    } catch {
-        print("Checkout failed: \(error.localizedDescription)")
+        
+        do {
+            let (_, _) = try await URLSession.shared.upload(for: request, from: uploadJSON)
+        } catch {
+            print(error)
+        }
     }
-}
-func replaceNewlines(with input: String) -> String {
-    let newlineCharacterSet = CharacterSet.newlines
-    
-    // Replace invisible new line characters with "\\n"
-    var temp = input.components(separatedBy: newlineCharacterSet).joined(separator: "\\n")
-    
-    // Replace the newline character (0A) with an empty string or any desired string
-    temp = temp.replacingOccurrences(of: "\u{0D}", with: "\\n")
-    temp = temp.replacingOccurrences(of: "\u{0009}", with: "")
-    return temp.replacingOccurrences(of: "\u{0A}", with: "\\n") // Replace with an empty string
-    
-    
-}
+    func replaceNewlines(with input: String) -> String {
+        let newlineCharacterSet = CharacterSet.newlines
+        
+        // Replace invisible new line characters with "\\n"
+        var temp = input.components(separatedBy: newlineCharacterSet).joined(separator: "\\n")
+        
+        // Replace the newline character (0A) with an empty string or any desired string
+        temp = temp.replacingOccurrences(of: "\u{0D}", with: "\\n")
+        temp = temp.replacingOccurrences(of: "\u{0009}", with: "")
+        return temp.replacingOccurrences(of: "\u{0A}", with: "\\n") // Replace with an empty string
+        
+        
+    }
 }
 extension URL {
     func download(to directory: FileManager.SearchPathDirectory, using fileName: String? = nil, overwrite: Bool = false, completion: @escaping (URL?, Error?) -> Void) throws {
