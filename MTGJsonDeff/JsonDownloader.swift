@@ -241,6 +241,7 @@ class JsonDownloader {
         }
         let uploadJSON = """
         {
+            "username": "Card Data Updates",
             "content": "My MTG Card data updated. \(updateDate.description)",
             "embeds": [
                 {
@@ -283,6 +284,7 @@ class JsonDownloader {
         
         let uploadJSON = """
         {
+            "username": "Card Data Updates",
             "content": "My MTG Card date diff Failed. \(updateDate.description)",
             "embeds": [
                 {
