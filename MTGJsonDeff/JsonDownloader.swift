@@ -127,6 +127,10 @@ class JsonDownloader {
                                 Task {
                                     print("Posting to API")
                                     await self.postToAPIAsync(update: updateDTO)
+                                    
+//                                    Task {
+//                                        await self.postToWebHookSuccess(cardCount: updateDTO.updatedCards.count, tokenCount: updateDTO.updatedTokens.count, setCount: updateDTO.newSetCodes.count, updateDate: updateDTO.updateDate)
+//                                    }
                                 }
                             } else {
                                 print("No sets to update")
@@ -207,27 +211,22 @@ class JsonDownloader {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        do {
-            
-            let (data, response) = try await URLSession.shared.upload(for: request, from: uploadData)
-            if let httpResponse = response as? HTTPURLResponse {
-                if httpResponse.statusCode != 200 {
-                    print("Post to API failed: \(httpResponse.statusCode)")
+        Task {
+            do {
+                let (data, response) = try await URLSession.shared.upload(for: request, from: uploadData)
+                if let httpResponse = response as? HTTPURLResponse {
+                    guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                        
+                        fatalError("Error while Posting to API.")
+                    }
+                    if httpResponse.statusCode == 200 {
+                        await postToWebHookSuccess(cardCount: update.updatedCards.count, tokenCount: update.updatedTokens.count, setCount: update.newSetCodes.count, updateDate: update.updateDate)
+                    }
                 }
-                if httpResponse.statusCode == 200 {
-                    await postToWebHookSuccess(cardCount: update.updatedCards.count, tokenCount: update.updatedTokens.count, setCount: update.newSetCodes.count, updateDate: update.updateDate)
-                }
-                print(httpResponse)
-                let outputStr  = String(data: data, encoding: String.Encoding.utf8) as String?
-                
-                print(outputStr ?? "")
+            } catch {
+                print("Checkout failed: \(error.localizedDescription)")
+                await postToWebHookFaiulre(error: error, updateDate: update.updateDate)
             }
-            
-            // handle the result
-        } catch {
-            print("Checkout failed: \(error.localizedDescription)")
-            await postToWebHookFaiulre(error: error, updateDate: update.updateDate)
         }
     }
     func postToWebHookSuccess(cardCount: Int, tokenCount: Int, setCount: Int, updateDate: Date) async {
@@ -266,11 +265,12 @@ class JsonDownloader {
                 }
             ]
         }
-        """.data(using: .utf8)!
+        """
+        let data = uploadJSON.data(using: .utf8)!
         
         
         do {
-            let (_, _) = try await URLSession.shared.upload(for: request, from: uploadJSON)
+            let (_, _) = try await URLSession.shared.upload(for: request, from: data)
         } catch {
             print(error)
         }
