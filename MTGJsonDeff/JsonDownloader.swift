@@ -10,7 +10,7 @@ import Zip
 
 class JsonDownloader {
     var webhookURL: String = "https://discord.com/api/webhooks/1343658207868096532/cCFjOArH4yzGFLkXaybO8cClLs9hFSqGeSCyPQiPlnBPGbxl2gIIOWDwHJBrERFIZ9Qs"
-    func download() {
+    func download() async {
         print("Run Date: \(Date())")
         print(FileManager.default.currentDirectoryPath)
         let setFileZipURL = "https://mtgjson.com/api/v5/AllSetFiles.zip"
@@ -124,18 +124,33 @@ class JsonDownloader {
                             //if updateDTO has sets write file
                             if updateDTO.newSetCodes.count > 0 || updateDTO.updatedCards.count > 0 || updateDTO.updatedTokens.count > 0 {
                                 self.writeDTOtoFile(updates: updateDTO)
+//                                Task {
+//                                    print("Posting to API")
+//                                   await self.postToAPIAsync(update: updateDTO)
+//                                }
+                                print("Posting to API")
+                                let semaphore = DispatchSemaphore(value: 0)
+
                                 Task {
-                                    print("Posting to API")
-                                    await self.postToAPIAsync(update: updateDTO)
+                                    do {
+                                        print("Starting API posting task")
+                                        await self.postToAPIAsync(update: updateDTO)
+                                        print("API posting completed successfully")
+                                    }
                                     
-//                                    Task {
-//                                        await self.postToWebHookSuccess(cardCount: updateDTO.updatedCards.count, tokenCount: updateDTO.updatedTokens.count, setCount: updateDTO.newSetCodes.count, updateDate: updateDTO.updateDate)
-//                                    }
+                                    print("Signaling completion")
+                                    semaphore.signal()
                                 }
+
+                                print("Waiting for API posting to complete...")
+                                semaphore.wait()
+                                print("API posting task finished, continuing with execution")
                             } else {
                                 print("No sets to update")
+                                let semaphore = DispatchSemaphore(value: 0)
                                 Task {
                                     await self.postToWebHookSuccess(cardCount: 0, tokenCount: 0, setCount: 0, updateDate: updateDTO.updateDate)
+                                    semaphore.signal()
                                 }
                             }
                             //move from current to dates folder
@@ -148,16 +163,20 @@ class JsonDownloader {
                         } catch {
                             print("error getting files")
                             print(error)
+                            let semaphore = DispatchSemaphore(value: 0)
                             Task {
                                 await self.postToWebHookFaiulre(error: error, updateDate: Date())
+                                semaphore.signal()
                             }
                         }
                     }
                     catch {
                         print("Something went wrong")
                         print(error.localizedDescription)
+                        let semaphore = DispatchSemaphore(value: 0)
                         Task {
                             await self.postToWebHookFaiulre(error: error, updateDate: Date())
+                            semaphore.signal()
                         }
                     }
                 }
@@ -201,33 +220,96 @@ class JsonDownloader {
         }
     }
     
+//    func postToAPIAsync(update: UpdateDTO) async {
+//        
+//        guard let uploadData = try? newJSONEncoder().encode(update) else {
+//            return
+//        }
+//        writeUpdateDatatoFile(updates: uploadData)
+//        let url = URL(string: "http://10.0.0.177:8081/updates")!
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "POST"
+//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+//
+//            do {
+//                let (data, response) = try await URLSession.shared.upload(for: request, from: uploadData)
+//                print("After Post to API")
+//                if let httpResponse = response as? HTTPURLResponse {
+////                    guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+////                        
+////                        fatalError("Error while Posting to API.")
+////                    }
+//                    if httpResponse.statusCode == 200 {
+//                            await postToWebHookSuccess(cardCount: update.updatedCards.count, tokenCount: update.updatedTokens.count, setCount: update.newSetCodes.count, updateDate: update.updateDate)
+//                    }
+//                }
+//            } catch {
+//                print("Checkout failed: \(error.localizedDescription)")
+//                await postToWebHookFaiulre(error: error, updateDate: update.updateDate)
+//            }
+//    }
     func postToAPIAsync(update: UpdateDTO) async {
+        print("--Starting API upload...")
         
         guard let uploadData = try? newJSONEncoder().encode(update) else {
+            print("ERROR: Failed to encode update data")
             return
         }
+        
+        print("--Successfully encoded data, size: \(uploadData.count) bytes")
         writeUpdateDatatoFile(updates: uploadData)
+        
         let url = URL(string: "http://10.0.0.177:8081/updates")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        Task {
-            do {
-                let (data, response) = try await URLSession.shared.upload(for: request, from: uploadData)
-                if let httpResponse = response as? HTTPURLResponse {
-                    guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-                        
-                        fatalError("Error while Posting to API.")
-                    }
-                    if httpResponse.statusCode == 200 {
-                        await postToWebHookSuccess(cardCount: update.updatedCards.count, tokenCount: update.updatedTokens.count, setCount: update.newSetCodes.count, updateDate: update.updateDate)
+
+        do {
+            print("--About to start upload...")
+            let (data, response) = try await URLSession.shared.upload(for: request, from: uploadData)
+            print("--Upload completed! Response received.")
+            
+            // Capture response details
+            let responseSize = data.count
+            print("--Response data size: \(responseSize) bytes")
+            
+            // Convert response to string if possible
+            if let responseStr = String(data: data, encoding: .utf8) {
+                print("--Response preview: \(responseStr.prefix(100))")
+            } else {
+                print("--Response is not a UTF-8 string")
+            }
+            
+            print("--After Post to API - This is the line that wasn't executing")
+            
+            if let httpResponse = response as? HTTPURLResponse {
+                print("--HTTP status code: \(httpResponse.statusCode)")
+                
+                // Check if response is 200
+                if httpResponse.statusCode == 200 {
+                    print("--About to call postToWebHookSuccess")
+                    await postToWebHookSuccess(cardCount: update.updatedCards.count,
+                                             tokenCount: update.updatedTokens.count,
+                                             setCount: update.newSetCodes.count,
+                                             updateDate: update.updateDate)
+                    print("--Finished postToWebHookSuccess")
+                } else {
+                    print("--Non-200 status code: \(httpResponse.statusCode)")
+                    if let responseText = String(data: data, encoding: .utf8) {
+                        print("--Error response: \(responseText)")
                     }
                 }
-            } catch {
-                print("Checkout failed: \(error.localizedDescription)")
-                await postToWebHookFaiulre(error: error, updateDate: update.updateDate)
+            } else {
+                print("--Response is not an HTTP response")
             }
+        } catch {
+            print("--Upload failed with error: \(error)")
+            print("--Error details: \(error.localizedDescription)")
+            
+            await postToWebHookFaiulre(error: error, updateDate: update.updateDate)
         }
+        
+        print("--End of postToAPIAsync function")
     }
     func postToWebHookSuccess(cardCount: Int, tokenCount: Int, setCount: Int, updateDate: Date) async {
         let url = URL(string: webhookURL)!
@@ -270,10 +352,14 @@ class JsonDownloader {
         
         
         do {
-            let (_, _) = try await URLSession.shared.upload(for: request, from: data)
+            print("Send Success to Discord")
+            let (_, response) = try await URLSession.shared.upload(for: request, from: data)
+            // print(response)
         } catch {
             print(error)
         }
+        
+        
     }
     func postToWebHookFaiulre(error: Error, updateDate: Date) async {
         let url = URL(string: webhookURL)!
@@ -306,6 +392,7 @@ class JsonDownloader {
         
         
         do {
+            print("Send Failure to Discord")
             let (_, _) = try await URLSession.shared.upload(for: request, from: uploadJSON)
         } catch {
             print(error)

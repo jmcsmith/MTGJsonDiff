@@ -9,7 +9,10 @@ import Foundation
 
 
 let downloader = JsonDownloader()
-downloader.download()
+await downloader.download()
+//try await Task.sleep(nanoseconds: 10_000_000_000) // 1 second
+print("downloader complete")
+
 exit(EXIT_SUCCESS)
 
 

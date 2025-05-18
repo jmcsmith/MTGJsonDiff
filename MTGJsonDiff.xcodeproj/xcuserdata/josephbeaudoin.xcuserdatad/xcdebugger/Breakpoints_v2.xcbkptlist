@@ -3,4 +3,68 @@
    uuid = "A4FBE159-9A76-4337-AC76-017754C62462"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "57DB3194-4BF4-4707-AA11-7F3BF81E67A5"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MTGJsonDeff/JsonDownloader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
+            landmarkName = "download()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A70B0EF8-7DEB-4364-915C-6ACCE9C88834"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MTGJsonDeff/JsonDownloader.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
+            landmarkName = "JsonDownloader"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "A70B0EF8-7DEB-4364-915C-6ACCE9C88834 - d6b2c579c56acda7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for MTGJsonDiff.JsonDownloader.postToAPIAsync(update: MTGJsonDiff.UpdateDTO) async -&gt; ()"
+                  moduleName = "MTGJsonDiff"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/josephbeaudoin/Developer/MTGJsonDeff/MTGJsonDeff/JsonDownloader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "218"
+                  endingLineNumber = "218">
+               </Location>
+               <Location
+                  uuid = "A70B0EF8-7DEB-4364-915C-6ACCE9C88834 - b0a56d654f0009a5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for MTGJsonDiff.JsonDownloader.postToAPIAsync(update: MTGJsonDiff.UpdateDTO) async -&gt; ()"
+                  moduleName = "MTGJsonDiff"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/josephbeaudoin/Developer/MTGJsonDeff/MTGJsonDeff/JsonDownloader.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "218"
+                  endingLineNumber = "218">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
