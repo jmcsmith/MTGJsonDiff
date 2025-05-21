@@ -9,7 +9,7 @@ import Foundation
 import Zip
 
 class JsonDownloader {
-    var webhookURL: String = "https://discord.com/api/webhooks/1343658207868096532/cCFjOArH4yzGFLkXaybO8cClLs9hFSqGeSCyPQiPlnBPGbxl2gIIOWDwHJBrERFIZ9Qs"
+    var webhookURL: String = "https://discord.com/api/webhooks/1374800201570844762/dkrN8wnlD3tqu-QVrFnz5eWWbYOkQe-K7w0ahGtRMkixH7-IhcWsjBhHYMKAun0erLV0"
     func download() async {
         print("Run Date: \(Date())")
         print(FileManager.default.currentDirectoryPath)
