@@ -266,7 +266,9 @@ class JsonDownloader {
 
         do {
             print("--About to start upload...")
-            let (data, response) = try await URLSession.shared.upload(for: request, from: uploadData)
+            let sessionConfig = URLSessionConfiguration.default
+            sessionConfig.timeoutIntervalForRequest = 300
+            let (data, response) = try await URLSession(configuration: sessionConfig).upload(for: request, from: uploadData)
             print("--Upload completed! Response received.")
             
             // Capture response details
